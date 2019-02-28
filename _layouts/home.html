@@ -1,0 +1,35 @@
+<div style="display: flex; flex-flow: row wrap; width: 80%; margin-left: auto; margin-right: auto; justify-content: center;">
+  {%- for post in paginator.posts %}
+  <div style="margin: 30px; border: 1px solid gray; width: 300px; display: flex; flex-direction: column; justify-content: flex-end;">
+    <a href={{ post.permalink | relative_url }} style="text-decoration: none; color: black;">
+      <div style="height: 300;">
+        <img src={{ post.image | relative_url }} style="max-width: 300px; max-height: 300px;" alt="{{post.title}}"/>
+      </div>
+      <h2>{{- post.title -}}</h2>
+      <p>{{- post.excerpt | strip_html | truncate: 180 | strip -}}</p>
+    </a>
+    <div style="margin-top: auto;">
+      <span>Tags: {{post.tags | join: ', ' | default: "None"}}</span><br/>
+      <span>Categories: {{post.categories | join: ', ' | default: "None"}}</span>
+    </div>
+  </div>
+{% endfor %}
+</div>
+<!-- Pagination links -->
+<div class="pagination">
+  {% if paginator.previous_page %}
+    <a href="{{ paginator.previous_page_path | relative_url }}" class="previous">
+      Previous
+    </a>
+  {% else %}
+    <span class="previous">Previous</span>
+  {% endif %}
+  <span class="page_number ">
+    Page: {{ paginator.page }} of {{ paginator.total_pages }}
+  </span>
+  {% if paginator.next_page %}
+    <a href="{{ paginator.next_page_path | relative_url }}" class="next">Next</a>
+  {% else %}
+    <span class="next ">Next</span>
+  {% endif %}
+</div>
