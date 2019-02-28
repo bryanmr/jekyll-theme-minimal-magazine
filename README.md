@@ -16,6 +16,10 @@ And add this line to your Jekyll site's `_config.yml`:
 theme: jekyll-theme-minimal-magazine
 ```
 
+Sometimes there are problems with [`bundle/bundler`](https://bundler.io/v2.0/guides/bundler_2_upgrade.html) and versions. It is usually a good idea to run:
+
+    $ gem update --system
+
 And then execute:
 
     $ bundle
