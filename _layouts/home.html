@@ -5,6 +5,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
     <link rel="stylesheet" href="{{ "/css/navigation.css" | relative_url }}">
     <link rel="stylesheet" href="{{ "/css/post_display.css" | relative_url }}">
+    {%- if site.paginate -%}
+    <script>
+      function next_page() {
+        {%- if paginator.next_page %}
+        window.location.href = '{{ paginator.next_page_path | relative_url }}'
+        {%- endif -%}
+      }
+      function previous_page() {
+        {%- if paginator.previous_page %}
+        window.location.href = '{{ paginator.previous_page_path | relative_url }}'
+        {%- endif -%}
+      }
+      function top_of_page_action (event) {
+        switch (event.which || event.keyCode) {
+          case 33: // Page Up
+          case 37: // Left
+          case 38: // Up
+            previous_page();
+            break;
+
+          default:
+            return; // Return, don't hit preventDefault()
+        }
+        event.preventDefault(); // Don't move page, if we reach here
+      }
+      function bottom_of_page_action(event) {
+        switch (event.which || event.keyCode) {
+          case 34: // Page Down
+          case 39: // Right
+          case 40: // Down
+            next_page();
+            break;
+
+          default:
+            return; // Return, don't hit preventDefault()
+        }
+        event.preventDefault(); // Don't move page, if we reach here
+      }
+      document.onkeydown = function (event) {
+        event = event || window.event;
+        if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight) {
+          bottom_of_page_action(event);
+        }
+        if (window.pageYOffset == 0) {
+          top_of_page_action(event);
+        }
+      }
+    </script>
+    {%- endif -%}
   </head>
   <body>
     <nav class="site_nav" role="navigation">
