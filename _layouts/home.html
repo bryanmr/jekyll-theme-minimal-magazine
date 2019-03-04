@@ -9,11 +9,15 @@
     <script>
       function next_page() {
         {%- if paginator.next_page %}
+        document.removeEventListener("wheel", check_wheel, true);
+        document.onkeydown = null;
         window.location.href = '{{ paginator.next_page_path | relative_url }}'
         {%- endif -%}
       }
       function previous_page() {
         {%- if paginator.previous_page %}
+        document.removeEventListener("wheel", check_wheel, true);
+        document.onkeydown = null;
         window.location.href = '{{ paginator.previous_page_path | relative_url }}'
         {%- endif -%}
       }
@@ -43,6 +47,15 @@
         }
         event.preventDefault(); // Don't move page, if we reach here
       }
+      function check_wheel() {
+        wheel_direction = event.deltaY < 0 ? 'up' : 'down';
+        if(wheel_direction == "up" && window.pageYOffset == 0) {
+          previous_page();
+        } else if(wheel_direction == "down" && (window.innerHeight + window.pageYOffset) >= document.body.offsetHeight) {
+          next_page();
+        }
+      }
+      document.addEventListener("wheel", check_wheel, true);
       document.onkeydown = function (event) {
         event = event || window.event;
         if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight) {
