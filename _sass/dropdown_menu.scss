@@ -21,7 +21,8 @@
     padding: 0;
     margin: 0;
   }
-  .dropdown:hover .dropdown-content {
+  .dropdown:hover .dropdown-content,
+  .dropdown:focus-within .dropdown-content {
     display: block;
   }
   .dropdown-content li {
