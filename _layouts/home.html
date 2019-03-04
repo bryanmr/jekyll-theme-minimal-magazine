@@ -3,57 +3,43 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
-    <style>
-      .all_posts_container {
-        display: flex;
-        flex-flow: row wrap;
-        width: 95%;
-        margin-left: auto;
-        margin-right: auto;
-        justify-content: center;
-      }
-      .single_post_container {
-        margin: 10px;
-        width: 300px;
-      }
-      .link_no_format {
-        text-decoration: none;
-        color: black;
-      }
-      .opacity_workaround {
-        position: relative;
-      }
-      .bg_post_image {
-        border-radius: 5px;
-        background-size: cover;
-        background-repeat: no-repeat;
-        width: 300px;
-        height: 300px;
-        opacity: 1;
-        transition: opacity 1s ease;
-        float: left;
-      }
-      .over_text {
-        position: absolute;
-        top: 1px;
-        left: 1px;
-        width: 300px;
-      }
-      .single_post_container:hover .bg_post_image {
-        opacity: .2
-      }
-      .single_post_container .over_text {
-        display: none;
-        opacity: .2;
-        transition: opacity 1s ease;
-      }
-      .single_post_container:hover .over_text {
-        display: inline;
-        opacity: 1;
-      }
-    </style>
+    <link rel="stylesheet" href="{{ "/css/navigation.css" | relative_url }}">
+    <link rel="stylesheet" href="{{ "/css/post_display.css" | relative_url }}">
   </head>
   <body>
+    <!-- Pagination links -->
+    <nav class="site_nav" role="navigation">
+    <ul class="nav_list">
+      {%- if site.paginate -%}
+      <li class="dropdown">
+        <a href="javascript:void(0)">Post Indexes</a>
+        <ul class="dropdown-content">
+          {%- for index_num in (1..paginator.total_pages) -%}
+          {%- if paginator.page == index_num %}
+          <li><span>Index Page {{ index_num }}</span></li>
+          {%- else %}
+          {%- if index_num == 1 %}
+          <li><a href="{{ '/' | relative_url }}">Index Page {{ index_num }}</a></li>
+          {%- else %}
+          <li><a href="{{ site.paginate_path | relative_url | replace: ':num', index_num }}">Index Page {{ index_num }}</a></li>
+          {%- endif -%}
+          {%- endif -%}
+          {%- endfor %}
+        </ul>
+      </li>
+      {%- endif -%}
+
+      <!-- Site nav from _config.yml -->
+      {%- for nav_target in site.navigation %}
+      {%- if page.url == nav_target.url -%}
+      <li class="current_item"><span title="Current Page">{{ nav_target.text }}</span></li>
+      {%- else -%}
+      <li class="nav_item"><a href="{{ nav_target.url | relative_url }}">{{ nav_target.text }}</a></li>
+      {%- endif -%}
+      {% endfor %}
+    </ul>
+    </nav>
+
     <div class="all_posts_container">
       {%- for post in paginator.posts %}
       <div class="single_post_container">
@@ -62,33 +48,30 @@
             <div class="bg_post_image" style="background: url({{ post.image | relative_url }});">
             </div>
             <div class="over_text">
-              <span>Tags: {{post.tags | join: ', ' | default: "None"}}</span><br/>
-              <span>Categories: {{post.categories | join: ', ' | default: "None"}}</span>
-              <p>{{- post | strip_html | truncate: 350 | strip -}}</p>
+              <span><b>Tags:</b> {{post.tags | join: ', ' | default: "None"}}</span><br/>
+              <span><b>Categories:</b> {{post.categories | join: ', ' | default: "None"}}</span><br/>
+              <span><b>Author:</b> {{post.author | default: "None"}}</span><br/>
+              <span><b>Date:</b> {{post.date | date: "%B %d, %Y" | default: "None"}}</span>
+              <p>{{- post | strip_html | truncatewords: 40 | strip -}} <em> Click for More</em></p>
             </div>
           </div>
           <h2>{{- post.title -}}</h2>
         </a>
       </div>
-      {% endfor %}
+      {%- endfor %}
     </div>
+
     <!-- Pagination links -->
-    <div class="pagination">
-      {% if paginator.previous_page %}
-      <a href="{{ paginator.previous_page_path | relative_url }}" class="previous">
-        Previous
-      </a>
-      {% else %}
-      <span class="previous">Previous</span>
-      {% endif %}
-      <span class="page_number ">
-        Page: {{ paginator.page }} of {{ paginator.total_pages }}
-      </span>
-      {% if paginator.next_page %}
-      <a href="{{ paginator.next_page_path | relative_url }}" class="next">Next</a>
-      {% else %}
-      <span class="next ">Next</span>
-      {% endif %}
+    {%- if site.paginate %}
+    <div class="paginate">
+      {%- if paginator.previous_page %}
+      <a href="{{ paginator.previous_page_path | relative_url }}">Previous</a>
+      {%- endif %}
+      <span class="page_number ">Page: {{ paginator.page }} of {{ paginator.total_pages }}</span>
+      {%- if paginator.next_page %}
+      <a href="{{ paginator.next_page_path | relative_url }}">Next</a>
+      {%- endif %}
     </div>
+    {%- endif %}
   </body>
-</html>
+<html>
