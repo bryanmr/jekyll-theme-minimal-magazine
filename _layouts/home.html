@@ -47,7 +47,7 @@
         }
         event.preventDefault(); // Don't move page, if we reach here
       }
-      function check_wheel() {
+      function check_wheel(event) {
         wheel_direction = event.deltaY < 0 ? 'up' : 'down';
         if(wheel_direction == "up" && window.pageYOffset == 0) {
           previous_page();
