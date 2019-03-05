@@ -1,16 +1,19 @@
 function next_page() {
-  if (next_url) {
-    document.removeEventListener("wheel", check_wheel, true);
-    document.onkeydown = null;
-    window.location.href = next_url;
+  //Requires display_ten from navbar.js
+  posts_start_position = posts_start_position+10;
+  if(posts_start_position >= document.getElementsByClassName("single_post_container").length) {
+    posts_start_position = document.getElementsByClassName("single_post_container").length - 10;
   }
+  display_ten();
 }
 function previous_page() {
-  if (previous_url) {
-    document.removeEventListener("wheel", check_wheel, true);
-    document.onkeydown = null;
-    window.location.href = previous_url;
+  //Requires display_ten from navbar.js
+  posts_start_position = posts_start_position-10;
+  if(posts_start_position < 0)
+  {
+    posts_start_position = 0;
   }
+  display_ten();
 }
 function top_of_page_action (event) {
   switch (event.which || event.keyCode) {

@@ -7,22 +7,7 @@
     <link rel="stylesheet" href="{{ "/css/post_display.css" | relative_url }}">
     <script src="{{ "/scripts/lunr.min.js" | relative_url }}"></script>
     <script src="{{ "/scripts/navbar.js" | relative_url }}"></script> <!-- Contains lunr.js search -->
-    {%- if site.paginate -%}
     <script src="{{ "/scripts/home.js" | relative_url }}"></script>
-    <script>
-      {%- if paginator.next_page %}
-      var next_url = '{{ paginator.next_page_path | relative_url }}';
-      {%- else %}
-      var next_url = false;
-      {%- endif %}
-
-      {%- if paginator.previous_page %}
-      var previous_url = '{{ paginator.previous_page_path | relative_url }}';
-      {%- else %}
-      var previous_url = false;
-      {%- endif %}
-    </script>
-    {%- endif -%}
   </head>
   <body>
     <nav class="site_nav" role="navigation">
@@ -36,37 +21,16 @@
         {%- endif -%}
         {% endfor %}
 
-        <!-- Pagination links -->
-        {%- if site.paginate -%}
-        <li class="dropdown">
-          <a tabindex="0" href="javascript:void(0)">Post Indexes</a>
-          <ul class="dropdown-content" aria-haspopup="true" aria-expanded="false">
-            {%- for index_num in (1..paginator.total_pages) -%}
-            {%- if paginator.page == index_num %}
-            <li role="menuitem"><span>Index Page {{ index_num }}</span></li>
-            {%- else %}
-            {%- if index_num == 1 %}
-            <li role="menuitem"><a href="{{ '/' | relative_url }}">Index Page {{ index_num }}</a></li>
-            {%- else %}
-            <li role="menuitem"><a href="{{ site.paginate_path | relative_url | replace: ':num', index_num }}">Index Page {{ index_num }}</a></li>
-            {%- endif -%}
-            {%- endif -%}
-            {%- endfor %}
-          </ul>
-        </li>
-        {%- endif -%}
-
         <!-- lunr.js search -->
         <form>
           <input id="search" class="search" type="search" name="lunr_search" placeholder="lunr.js site search">
         </form>
-
       </ul>
     </nav>
 
     <div class="all_posts_container">
-      {%- for post in paginator.posts %}
-      <div class="single_post_container">
+      {%- for post in site.posts %}
+      <div id="{{ post.permalink | sluggify }}" class="single_post_container">
         <a href={{ post.permalink | relative_url }} class="link_no_format">
           <div class="opacity_workaround">
             <div class="bg_post_image" style="background: url({{ post.image | relative_url }});">
@@ -84,18 +48,5 @@
       </div>
       {%- endfor %}
     </div>
-
-    <!-- Pagination links -->
-    {%- if site.paginate %}
-    <div class="paginate">
-      {%- if paginator.previous_page %}
-      <a href="{{ paginator.previous_page_path | relative_url }}">Previous</a>
-      {%- endif %}
-      <span class="page_number ">Page: {{ paginator.page }} of {{ paginator.total_pages }}</span>
-      {%- if paginator.next_page %}
-      <a href="{{ paginator.next_page_path | relative_url }}">Next</a>
-      {%- endif %}
-    </div>
-    {%- endif %}
   </body>
 <html>
