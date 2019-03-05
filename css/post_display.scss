@@ -46,19 +46,6 @@
   transition: opacity 1s ease;
 }
 @media only screen and (max-width: 767px) {
-  .paginate {
-    font: normal 26px Verdana, Arial, sans-serif;
-    text-align: center;
-    background-color: black;
-    width: 100%;
-  }
-  .paginate span {
-    color: white;
-  }
-  .paginate a {
-    text-decoration: underline;
-    color: white;
-  }
 }
 @media only screen and (min-width: 768px) {
   .single_post_container:hover .over_text {
@@ -68,8 +55,5 @@
   }
   .single_post_container:hover .bg_post_image {
     opacity: .2
-  }
-  .paginate {
-    display: none;
   }
 }

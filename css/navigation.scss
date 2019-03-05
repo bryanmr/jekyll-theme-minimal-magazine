@@ -14,6 +14,7 @@
 }
 .nav_list li {
   text-align: center;
+  
 }
 .current_item span, .nav_item a {
   color: white;
@@ -28,15 +29,21 @@ li a:hover {
   background-color: MidnightBlue;
 }
 .search {
-  float: right;
   display: none;
 }
 @media only screen and (max-width: 767px) {
-  .nav_item, .current_item {
+  .nav_item, .current_item, .search {
     font: normal 26px Verdana, Arial, sans-serif;
+  }
+  .search {
+    min-width: 90%;
+    margin: 0 auto;
   }
 }
 @media only screen and (min-width: 768px) {
+  .search_item {
+    float: right;
+  }
   .nav_item, .current_item {
     float: left;
     overflow: hidden;
