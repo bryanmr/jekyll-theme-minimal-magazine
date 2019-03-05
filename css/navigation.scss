@@ -27,6 +27,10 @@ li a:hover {
 .current_item {
   background-color: MidnightBlue;
 }
+.search {
+  float: right;
+  display: none;
+}
 @media only screen and (max-width: 767px) {
   .nav_item, .current_item {
     font: normal 26px Verdana, Arial, sans-serif;

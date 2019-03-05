@@ -6,79 +6,21 @@
     <link rel="stylesheet" href="{{ "/css/navigation.css" | relative_url }}">
     <link rel="stylesheet" href="{{ "/css/post_display.css" | relative_url }}">
     <script src="{{ "/scripts/lunr.min.js" | relative_url }}"></script>
+    <script src="{{ "/scripts/navbar.js" | relative_url }}"></script> <!-- Contains lunr.js search -->
     {%- if site.paginate -%}
+    <script src="{{ "/scripts/home.js" | relative_url }}"></script>
     <script>
-      function load_search_data() {
-        var raw_json = new XMLHttpRequest();
-        raw_json.overrideMimeType("application/json");
-        raw_json.open('GET', '{{ "lunr_serialized.json" | relative_url }}', true);
-        raw_json.onreadystatechange = function () {
-          if (raw_json.readyState == raw_json.DONE && raw_json.status == 200) {
-            var idx = lunr.Index.load(JSON.parse(raw_json.responseText))
-            console.log(idx.search('Peterson'));
-          }
-        }
-        raw_json.send(null);
-      }
-      load_search_data();
-      function next_page() {
-        {%- if paginator.next_page %}
-        document.removeEventListener("wheel", check_wheel, true);
-        document.onkeydown = null;
-        window.location.href = '{{ paginator.next_page_path | relative_url }}'
-        {%- endif -%}
-      }
-      function previous_page() {
-        {%- if paginator.previous_page %}
-        document.removeEventListener("wheel", check_wheel, true);
-        document.onkeydown = null;
-        window.location.href = '{{ paginator.previous_page_path | relative_url }}'
-        {%- endif -%}
-      }
-      function top_of_page_action (event) {
-        switch (event.which || event.keyCode) {
-          case 33: // Page Up
-          case 37: // Left
-          case 38: // Up
-            previous_page();
-            break;
+      {%- if paginator.next_page %}
+      var next_url = '{{ paginator.next_page_path | relative_url }}';
+      {%- else %}
+      var next_url = false;
+      {%- endif %}
 
-          default:
-            return; // Return, don't hit preventDefault()
-        }
-        event.preventDefault(); // Don't move page, if we reach here
-      }
-      function bottom_of_page_action(event) {
-        switch (event.which || event.keyCode) {
-          case 34: // Page Down
-          case 39: // Right
-          case 40: // Down
-            next_page();
-            break;
-
-          default:
-            return; // Return, don't hit preventDefault()
-        }
-        event.preventDefault(); // Don't move page, if we reach here
-      }
-      function check_wheel(event) {
-        wheel_direction = event.deltaY < 0 ? 'up' : 'down';
-        if(wheel_direction == "up" && window.pageYOffset == 0) {
-          previous_page();
-        } else if(wheel_direction == "down" && (window.innerHeight + window.pageYOffset) >= document.body.offsetHeight) {
-          next_page();
-        }
-      }
-      document.addEventListener("wheel", check_wheel, true);
-      document.onkeydown = function (event) {
-        event = event || window.event;
-        if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight) {
-          bottom_of_page_action(event);
-        }
-        if (window.pageYOffset == 0) {
-          top_of_page_action(event);
-        }
-      }
+      {%- if paginator.previous_page %}
+      var previous_url = '{{ paginator.previous_page_path | relative_url }}';
+      {%- else %}
+      var previous_url = false;
+      {%- endif %}
     </script>
     {%- endif -%}
   </head>
@@ -113,6 +55,12 @@
           </ul>
         </li>
         {%- endif -%}
+
+        <!-- lunr.js search -->
+        <form>
+          <input id="search" class="search" type="search" name="lunr_search" placeholder="lunr.js site search">
+        </form>
+
       </ul>
     </nav>
 
