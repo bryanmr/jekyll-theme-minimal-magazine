@@ -1,0 +1,17 @@
+---
+sitemap: false
+layout: null
+---
+[
+  {%- for post in site.posts %}
+  {
+    "title": "{{ post.title | escape }}",
+    "content": "{{ post.content | strip_html | strip_newlines | normalize_whitespace | escape }}",
+    "url": " {{ post.url | escape }}",
+    "author": "{{ post.author | escape }}",
+    "categories": "{{ post.categories | join: ', ' | default: "None" }}",
+    "tags": "{{post.tags | join: ', ' | default: "None"}}"
+  }
+  {%- unless forloop.last %},{% endunless -%}
+  {%- endfor %}
+]

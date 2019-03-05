@@ -5,8 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
     <link rel="stylesheet" href="{{ "/css/navigation.css" | relative_url }}">
     <link rel="stylesheet" href="{{ "/css/post_display.css" | relative_url }}">
+    <script src="{{ "/scripts/lunr.min.js" | relative_url }}"></script>
     {%- if site.paginate -%}
     <script>
+      function load_search_data() {
+        var raw_json = new XMLHttpRequest();
+        raw_json.overrideMimeType("application/json");
+        raw_json.open('GET', '{{ "lunr_serialized.json" | relative_url }}', true);
+        raw_json.onreadystatechange = function () {
+          if (raw_json.readyState == raw_json.DONE && raw_json.status == 200) {
+            var idx = lunr.Index.load(JSON.parse(raw_json.responseText))
+            console.log(idx.search('Peterson'));
+          }
+        }
+        raw_json.send(null);
+      }
+      load_search_data();
       function next_page() {
         {%- if paginator.next_page %}
         document.removeEventListener("wheel", check_wheel, true);
