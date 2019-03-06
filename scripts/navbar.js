@@ -6,8 +6,30 @@ var posts_start_position = 0;
 
 document.addEventListener("DOMContentLoaded", function () {
   initialize_search('/vg/lunr_serialized.json');
+  set_posts_start();
   display_ten();
 });
+
+function set_posts_start() {
+  if(window.location.search) {
+    let post_start = "post_start"
+    let regex = new RegExp("&*"+post_start+"=.+?(?=&|$)");
+    let matching_location = window.location.search.match(regex);
+    let split_post_start = matching_location[0].split("=");
+    posts_start_position = parseInt(split_post_start[1],10);
+    post_position_real();
+  }
+}
+
+function post_position_real() {
+  if(posts_start_position >= document.getElementsByClassName("single_post_container").length) {
+    console.log("Reached end! Old post start position: "+posts_start_position);
+    posts_start_position = document.getElementsByClassName("single_post_container").length - 10;
+  } else if(posts_start_position < 0) {
+    console.log("Reached start! Old post start position: "+posts_start_position);
+    posts_start_position = 0;
+  }
+}
 
 function display_ten() {
   posts=document.getElementsByClassName("single_post_container");
@@ -23,10 +45,10 @@ function display_ten() {
 }
 
 function update_url(new_param) {
-  new_key_value=new_param.split("=");
+  let new_key_value=new_param.split("=");
   if(window.location.search.search(new_key_value[0]) > -1) {
     let regex = new RegExp(new_key_value[0]+"=.+?(?=&|$)");
-    updated_location_search = window.location.search.replace(regex, new_param);
+    let updated_location_search = window.location.search.replace(regex, new_param);
     window.history.replaceState({}, '', updated_location_search);
   } else {
     if(window.location.search) {
@@ -39,7 +61,7 @@ function update_url(new_param) {
 
 function pop_param_from_url(goner) {
   let regex = new RegExp("&*"+goner+"=.+?(?=&|$)");
-  updated_location_search = window.location.search.replace(regex, "");
+  let updated_location_search = window.location.search.replace(regex, "");
   window.history.replaceState({}, '', updated_location_search);
 }
 

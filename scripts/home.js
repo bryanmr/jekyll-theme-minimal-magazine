@@ -1,18 +1,13 @@
 function next_page() {
   //Requires display_ten from navbar.js
   posts_start_position = posts_start_position+10;
-  if(posts_start_position >= document.getElementsByClassName("single_post_container").length) {
-    posts_start_position = document.getElementsByClassName("single_post_container").length - 10;
-  }
+  post_position_real();
   display_ten();
 }
 function previous_page() {
   //Requires display_ten from navbar.js
   posts_start_position = posts_start_position-10;
-  if(posts_start_position < 0)
-  {
-    posts_start_position = 0;
-  }
+  post_position_real();
   display_ten();
 }
 function top_of_page_action (event) {
