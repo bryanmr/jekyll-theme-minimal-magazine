@@ -1,29 +1,37 @@
----
-layout: null
----
 var lunr_index = false;
 var posts_start_position = 0;
 
 document.addEventListener("DOMContentLoaded", function () {
   initialize_search('/vg/lunr_serialized.json');
-  set_posts_start();
-  display_ten();
+  if(window.location.search) {
+    set_posts_start();
+    write_full_post(get_set_value("content"));
+  }
+  if(!get_set_value("search_term")) {
+    display_ten();
+  }
 });
 
 function go_home() {
   window.history.replaceState({}, '', "index.html");
+  close_full_post();
   posts_start_position = 0;
   display_ten();
 }
 
 function set_posts_start() {
-  if(window.location.search) {
-    let post_start = "post_start"
-    let regex = new RegExp("&*"+post_start+"=.+?(?=&|$)");
-    let matching_location = window.location.search.match(regex);
-    let split_post_start = matching_location[0].split("=");
-    posts_start_position = parseInt(split_post_start[1],10);
-    post_position_real();
+  let split_post_start=get_set_value("post_start");
+  let posts_start_position = parseInt(split_post_start,10);
+  post_position_real();
+}
+
+function get_set_value(key) {
+  let regex = new RegExp("&*"+key+"=.+?(?=&|$)");
+  let matching_location = window.location.search.match(regex);
+  if (matching_location) {
+    return matching_location[0].split("=")[1];
+  } else {
+    return false;
   }
 }
 
@@ -96,15 +104,26 @@ async function initialize_search(url) {
   lunr_index = lunr.Index.load(JSON.parse(await xhr_request(url)));
   document.getElementById("search").addEventListener("input", do_search);
   document.getElementById("search").style.display = "block";
+  search_onLoad();
+}
+
+function search_onLoad() {
+  let search_term = get_set_value("search_term");
+  if(search_term) {
+    document.getElementById("search").value = get_set_value("search_term");
+    do_search({target:{value:search_term}}); // This is the expected format
+  }
 }
 
 async function write_full_post(url) {
-  page_contents = await xhr_request(url);
-  document.getElementById("full_post").style.display = "block";
-  document.getElementById("full_post").innerHTML = page_contents;
-  document.getElementById("all_posts_container").style.display = "none";
-  document.getElementById("close_full_post").style.display = "initial";
-  update_url("content="+url);
+  if(url) {
+    page_contents = await xhr_request(url);
+    document.getElementById("full_post").style.display = "block";
+    document.getElementById("full_post").innerHTML = page_contents;
+    document.getElementById("all_posts_container").style.display = "none";
+    document.getElementById("close_full_post").style.display = "initial";
+    update_url("content="+url);
+  }
 }
 
 function close_full_post() {

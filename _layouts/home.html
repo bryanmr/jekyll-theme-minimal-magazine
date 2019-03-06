@@ -33,7 +33,7 @@
         <!-- lunr.js search -->
         <li class="search_item">
           <form>
-            <input id="search" class="search" type="search" name="lunr_search" placeholder="lunr.js site search">
+            <input onkeydown="if(event.keyCode == 13){event.preventDefault(); return false;}" id="search" class="search" type="search" name="lunr_search" placeholder="lunr.js site search">
           </form>
         </li>
 
