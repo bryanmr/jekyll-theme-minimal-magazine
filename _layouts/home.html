@@ -45,6 +45,7 @@
         </li>
       </ul>
       <a href="#" id="close_full_post" class="close_full_post" onclick="close_full_post();return false">Close Displayed Content</a>
+      <a href="#" id="clear_search_results" class="clear_search_results" onclick="clear_search_results();return false">Clear Search Results</a>
     </nav>
 
     <div id="all_posts_container" class="all_posts_container">
@@ -66,11 +67,12 @@
         </a>
       </div>
       {%- endfor %}
-    </div>
-
-    <div class="display_holder">
-      <div class="full_post" id="full_post">
+      <div id="page_number" class="page_number">
       </div>
     </div>
+
+    <div class="full_post" id="full_post">
+    </div>
+
   </body>
 </html>

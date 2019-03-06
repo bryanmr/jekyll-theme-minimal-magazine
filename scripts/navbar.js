@@ -22,7 +22,7 @@ function go_home() {
 
 function set_posts_start() {
   let split_post_start=get_set_value("post_start");
-  let posts_start_position = parseInt(split_post_start,10);
+  posts_start_position = parseInt(split_post_start,10);
   post_position_real();
 }
 
@@ -37,13 +37,21 @@ function get_set_value(key) {
 }
 
 function post_position_real() {
-  if(posts_start_position >= document.getElementsByClassName("single_post_container").length) {
+  let max_posts = document.getElementsByClassName("single_post_container").length;
+  if(posts_start_position >= max_posts) {
     console.log("Reached end! Old post start position: "+posts_start_position);
-    posts_start_position = document.getElementsByClassName("single_post_container").length - 10;
+    posts_start_position = max_posts - 10;
   } else if(posts_start_position < 0) {
     console.log("Reached start! Old post start position: "+posts_start_position);
     posts_start_position = 0;
   }
+  display_post_count(max_posts);
+}
+
+function display_post_count(max_posts) {
+  let current_post_page = parseInt(((posts_start_position+10)/10),10);
+  let post_pages_total = parseInt((max_posts/10),10);
+  document.getElementById("page_number").innerHTML = "<span>Page "+current_post_page+" of "+post_pages_total+"</span>";
 }
 
 function display_ten() {
@@ -81,6 +89,8 @@ function pop_param_from_url(goner) {
 }
 
 function do_search(value) {
+  document.getElementById("clear_search_results").style.display = "initial";
+  document.getElementById("page_number").style.display = "none";
   posts=document.getElementsByClassName("single_post_container");
   for(let i = 0; i < posts.length; i++) {
     posts[i].style.display = "none";
@@ -93,6 +103,7 @@ function do_search(value) {
   } else {
     pop_param_from_url("search_term");
     display_ten();
+    document.getElementById("page_number").style.display = "initial";
   }
 }
 
@@ -138,6 +149,14 @@ function close_full_post() {
   document.getElementById("previous_page").style.display = "initial";
   document.getElementById("search").style.display = "block";
   pop_param_from_url("content");
+}
+
+function clear_search_results() {
+  document.getElementById("clear_search_results").style.display = "none";
+  document.getElementById("search").value = "";
+  pop_param_from_url("search_term");
+  document.getElementById("page_number").style.display = "initial";
+  display_ten();
 }
 
 function xhr_request(url) {

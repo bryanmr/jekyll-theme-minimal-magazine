@@ -45,9 +45,9 @@
   opacity: .2;
   transition: opacity 1s ease;
 }
-.head_spacer {
-  width: 100%;
-  height: 30px;
+.page_number {
+  flex-basis: 100%;
+  text-align: right;
 }
 @media only screen and (max-width: 767px) {
 }
