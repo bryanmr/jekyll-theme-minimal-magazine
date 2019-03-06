@@ -15,7 +15,7 @@
         <!-- Site nav from _config.yml -->
         {%- for nav_target in site.navigation %}
         {%- if page.url == nav_target.url -%}
-        <li class="current_item"><span title="Current Page">{{ nav_target.text }}</span></li>
+        <li class="current_item"><a title="Current Page" href="{{ nav_target.url | relative_url }}">{{ nav_target.text }}</a></li>
         {%- else -%}
         <li class="nav_item"><a href="{{ nav_target.url | relative_url }}">{{ nav_target.text }}</a></li>
         {%- endif -%}
