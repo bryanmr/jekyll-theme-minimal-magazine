@@ -10,6 +10,12 @@ document.addEventListener("DOMContentLoaded", function () {
   display_ten();
 });
 
+function go_home() {
+  window.history.replaceState({}, '', "index.html");
+  posts_start_position = 0;
+  display_ten();
+}
+
 function set_posts_start() {
   if(window.location.search) {
     let post_start = "post_start"
@@ -92,13 +98,29 @@ async function initialize_search(url) {
   document.getElementById("search").style.display = "block";
 }
 
+async function write_full_post(url) {
+  page_contents = await xhr_request(url);
+  document.getElementById("full_post").style.display = "block";
+  document.getElementById("full_post").innerHTML = page_contents;
+  document.getElementById("all_posts_container").style.display = "none";
+  document.getElementById("close_full_post").style.display = "initial";
+  update_url("content="+url);
+}
+
+function close_full_post() {
+  document.getElementById("full_post").style.display = "none";
+  document.getElementById("close_full_post").style.display = "none";
+  document.getElementById("all_posts_container").style.display = "flex";
+  pop_param_from_url("content");
+}
+
 function xhr_request(url) {
   return new Promise(function (resolve, reject) {
     let raw_json = new XMLHttpRequest();
     raw_json.open('GET', url);
     raw_json.onload = function () {
       if (this.status >= 200 && this.status < 300) {
-        resolve(raw_json.response);
+        resolve(raw_json.responseText);
       } else {
         reject({
           status: this.status,

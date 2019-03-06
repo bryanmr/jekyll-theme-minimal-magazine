@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <title>{{ site.title }}</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
     <link rel="stylesheet" href="{{ "/css/navigation.css" | relative_url }}">
@@ -13,13 +14,21 @@
     <nav class="site_nav" role="navigation">
       <ul class="nav_list">
         <!-- Site nav from _config.yml -->
-        {%- for nav_target in site.navigation %}
-        {%- if page.url == nav_target.url -%}
-        <li class="current_item"><a title="Current Page" href="{{ nav_target.url | relative_url }}">{{ nav_target.text }}</a></li>
-        {%- else -%}
-        <li class="nav_item"><a href="{{ nav_target.url | relative_url }}">{{ nav_target.text }}</a></li>
+        {%- for nav_target in site.navigation -%}
+        {%- if page.url == nav_target.url %}
+        <li class="current_item">
+          <a title="Home Page" href="#" onclick='go_home();return false' class="link_no_format">
+            {{ nav_target.text }}
+          </a>
+        </li>
+        {%- else %}
+        <li class="nav_item">
+          <a href="#" onclick='write_full_post("{{ nav_target.url | relative_url }}");return false' class="link_no_format">
+            {{ nav_target.text }}
+          </a>
+        </li>
         {%- endif -%}
-        {% endfor %}
+        {%- endfor %}
 
         <!-- lunr.js search -->
         <li class="search_item">
@@ -27,6 +36,7 @@
             <input id="search" class="search" type="search" name="lunr_search" placeholder="lunr.js site search">
           </form>
         </li>
+
         <li class="page_item">
           <a id="next_page" href="#" title="Next Posts" onclick="next_page();return false">Next Posts</a>
         </li>
@@ -34,12 +44,13 @@
           <a id="previous_page" href="#" title="Previous Posts" onclick="previous_page();return false">Previous Posts</a>
         </li>
       </ul>
+      <a href="#" id="close_full_post" class="close_full_post" onclick="close_full_post();return false">Close Displayed Content</a>
     </nav>
 
-    <div class="all_posts_container">
+    <div id="all_posts_container" class="all_posts_container">
       {%- for post in site.posts %}
       <div id="{{ post.permalink | sluggify }}" class="single_post_container">
-        <a href={{ post.permalink | relative_url }} class="link_no_format">
+        <a href="#" onclick='write_full_post("{{ post.permalink | relative_url }}");return false' class="link_no_format">
           <div class="opacity_workaround">
             <div class="bg_post_image" style="background: url({{ post.image | relative_url }});">
             </div>
@@ -56,5 +67,10 @@
       </div>
       {%- endfor %}
     </div>
+
+    <div class="display_holder">
+      <div class="full_post" id="full_post">
+      </div>
+    </div>
   </body>
-<html>
+</html>
