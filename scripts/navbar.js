@@ -122,6 +122,9 @@ async function write_full_post(url) {
     document.getElementById("full_post").style.display = "block";
     document.getElementById("full_post").innerHTML = page_contents;
     document.getElementById("all_posts_container").style.display = "none";
+    document.getElementById("search").style.display = "none";
+    document.getElementById("next_page").style.display = "none";
+    document.getElementById("previous_page").style.display = "none";
     document.getElementById("close_full_post").style.display = "initial";
     update_url("content="+url);
   }
@@ -131,6 +134,9 @@ function close_full_post() {
   document.getElementById("full_post").style.display = "none";
   document.getElementById("close_full_post").style.display = "none";
   document.getElementById("all_posts_container").style.display = "flex";
+  document.getElementById("next_page").style.display = "initial";
+  document.getElementById("previous_page").style.display = "initial";
+  document.getElementById("search").style.display = "block";
   pop_param_from_url("content");
 }
 
