@@ -16,7 +16,7 @@
   text-align: center;
   
 }
-.current_item span, .nav_item a {
+.nav_list a, .nav_list span {
   color: white;
   text-decoration: none;
   padding-right: 20px;
@@ -32,8 +32,8 @@ li a:hover {
   display: none;
 }
 @media only screen and (max-width: 767px) {
-  .nav_item, .current_item, .search {
-    font: normal 26px Verdana, Arial, sans-serif;
+  .nav_list, .search {
+    font: normal 28px Verdana, Arial, sans-serif;
   }
   .search {
     min-width: 90%;
@@ -41,7 +41,7 @@ li a:hover {
   }
 }
 @media only screen and (min-width: 768px) {
-  .search_item {
+  .page_item, .search_item {
     float: right;
   }
   .nav_item, .current_item {
