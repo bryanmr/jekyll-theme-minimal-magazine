@@ -16,6 +16,7 @@ function go_home() {
   window.history.replaceState({}, '', "index.html");
   close_full_post();
   posts_start_position = 0;
+  document.getElementById("search").value = "";
   display_ten();
 }
 
