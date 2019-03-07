@@ -9,6 +9,29 @@
     <script src="{{ "/scripts/lunr.min.js" | relative_url }}"></script>
     <script src="{{ "/scripts/navbar.js" | relative_url }}"></script> <!-- Contains lunr.js search -->
     <script src="{{ "/scripts/home.js" | relative_url }}"></script>
+    <script>
+      {%- capture site_categories -%}
+        {%- for category in site.categories -%}
+          '{{- category | first -}}'
+          {%- unless forloop.last -%}
+            ,
+          {%- endunless -%}
+        {%- endfor -%}
+      {%- endcapture -%}
+
+      {%- capture site_tags -%}
+        {%- for tag in site.tags -%}
+          '{{- tag | first -}}'
+          {%- unless forloop.last -%}
+            ,
+          {%- endunless -%}
+        {%- endfor -%}
+      {%- endcapture %}
+      var categories = [{{ site_categories | default: "None" }}];
+      var tags = [{{ site_tags | default: "None" }}]
+      console.log(categories);
+      console.log(tags);
+    </script>
   </head>
   <body>
     <nav class="site_nav" role="navigation">
@@ -50,16 +73,16 @@
 
     <div id="all_posts_container" class="all_posts_container">
       {%- for post in site.posts %}
-      <div id="{{ post.permalink | sluggify }}" class="single_post_container">
+      <div id="{{ post.permalink | sluggify }}" class="single_post_container" data-categories="{{post.categories | join: ',' | default: 'None'}}" data-tags="{{post.tags | join: ',' | default: 'None'}}">
         <a href="#" onclick='write_full_post("{{ post.permalink | relative_url }}");return false' class="link_no_format">
           <div class="opacity_workaround">
             <div class="bg_post_image" style="background: url({{ post.image | relative_url }});">
             </div>
             <div class="over_text">
-              <span><b>Tags:</b> {{post.tags | join: ', ' | default: "None"}}</span><br/>
-              <span><b>Categories:</b> {{post.categories | join: ', ' | default: "None"}}</span><br/>
-              <span><b>Author:</b> {{post.author | default: "None"}}</span><br/>
-              <span><b>Date:</b> {{post.date | date: "%B %d, %Y" | default: "None"}}</span>
+              <span><b>Author:</b> {{post.author | default: 'None'}}</span><br>
+              <span><b>Date:</b> {{post.date | date: "%B %d, %Y" | default: 'None'}}</span><br>
+              <span><b>Categories:</b> {{post.categories | join: ', ' | default: 'None'}}</span><br>
+              <span><b>Tags:</b> {{post.tags | join: ', ' | default: 'None'}}</span>
               <p>{{- post | strip_html | truncatewords: 40 | strip -}} <em> Click for More</em></p>
             </div>
           </div>
