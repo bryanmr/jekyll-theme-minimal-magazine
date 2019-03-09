@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>{{ site.title }}</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
     <link rel="stylesheet" href="{{ "/css/navigation.css" | relative_url }}">
@@ -29,6 +28,7 @@
       var categories = [{{ site_categories | default: "None" }}];
       var tags = [{{ site_tags | default: "None" }}]
     </script>
+    {% seo %}
   </head>
   <body>
     <nav class="site_nav" role="navigation">
