@@ -10,6 +10,7 @@
   background-color: black;
   float: right;
   display: none;
+  margin-top: 10px;
 }
 .nav_list {
   background-color: black;
@@ -35,14 +36,24 @@ li a:hover {
   background-color: MidnightBlue;
 }
 .search {
+  max-width: 90%;
+  text-align: center;
   display: none;
 }
+.full_post_image {
+  float: right;
+}
+.highlighted {
+  background-color: yellow;
+}
+.not_highlighted {
+  background-color: initial;
+}
 @media only screen and (max-width: 767px) {
-  .nav_list, .search {
+  .nav_list, .search, .close_full_post, .clear_search_results {
     font: normal 28px Verdana, Arial, sans-serif;
   }
   .search {
-    min-width: 90%;
     margin: 0 auto;
   }
 }
