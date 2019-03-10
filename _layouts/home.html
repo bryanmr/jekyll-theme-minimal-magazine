@@ -31,7 +31,7 @@
     {% seo %}
   </head>
   <body>
-    <nav class="site_nav" role="navigation">
+    <nav class="site_nav">
       <ul class="nav_list">
         <!-- Site nav from _config.yml -->
         {%- for nav_target in site.navigation -%}
@@ -49,7 +49,11 @@
         </li>
         {%- endif -%}
         {%- endfor %}
-
+      </ul>
+    </nav>
+    <h1 class="headline">{{ site.title }} -- {{ site.description }}</h1>
+    <nav class="site_nav">
+      <ul class="nav_list">
         <!-- lunr.js search -->
         <li class="search_item">
           <form>
@@ -92,6 +96,9 @@
     </div>
 
     <div class="full_post" id="full_post"></div>
-
+    <div id="footer" class="contrast">
+      <div id="advertisement" class="contrast"><a href="https://github.com/bryanmr/jekyll-theme-minimal-magazine">Jekyll Minimal Magazine</a> by <a href="https://bryanreese.net">Bryan Reese</a></div>
+      <div id="copyright" class="contrast">Content Copyright {{ site.name }} in {{ site.time | date: '%Y' }}</div>
+    </div>
   </body>
 </html>
