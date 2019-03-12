@@ -6,9 +6,10 @@ var postsStartPosition = 0;
 /* eslint-enable */
 
 document.addEventListener('DOMContentLoaded', function() {
-  document.addEventListener('wheel', checkWheel, true);
+  window.addEventListener('scroll', checkBottom, true);
   document.onkeydown = checkKey;
   window.onpopstate = handleBrowserBack;
+  footerHeightSet();
   initializePage();
 });
 
@@ -18,18 +19,29 @@ function handleBrowserBack() {
   location.reload();
 }
 
+/** Sets the footer spacer to match the footer, no wasted space */
+function footerHeightSet() {
+  const footerHeight =
+    window.getComputedStyle(document.getElementById('footer')).height;
+  document.getElementById('footer_spacer').style.height = footerHeight;
+}
+
 /** Gets the page ready to be displayed */
 async function initializePage() {
   if (!lunrIndex) {
     await initializeSearch('/vg/lunr_serialized.json');
   }
-  setPostsStart((getSetValue('postStart')-1)*10);
   const searchTerm = getSetValue('searchTerm');
   if (searchTerm) {
     document.getElementById('search').value = getSetValue('searchTerm');
     doSearch({target: {value: searchTerm}}); // This is the expected format
   } else {
     displayTen();
+    if ((window.innerHeight + window.pageYOffset) >=
+      document.body.scrollHeight-10) {
+      postsStartPosition = postsStartPosition+10;
+      displayTenMore();
+    }
   }
   writeFullPost(getSetValue('content'));
 }
@@ -41,15 +53,6 @@ function goHome() {
   postsStartPosition = 0;
   document.getElementById('search').value = '';
   displayTen();
-}
-
-/** Reads get paramater and sets postsStartPosition based on result.
- * @param {string} startPosition - Number to start posts at or false */
-function setPostsStart(startPosition) {
-  if (startPosition) {
-    postsStartPosition = parseInt(startPosition, 10);
-    postPositionReal();
-  }
 }
 
 /** Reads the value of HTTP get values
@@ -93,20 +96,27 @@ function displayTen() {
     posts[i].style.display = 'none';
   }
 
+  postPositionReal();
   const postsEnd = postsStartPosition+10;
   for (let i = postsStartPosition; i < postsEnd; i++) {
     posts[i].style.display = 'block';
     posts[i].style.order = 0;
   }
 
-  if (postsStartPosition > 0) {
-    updateURL('postStart='+((postsStartPosition/10)+1));
-  } else {
-    popParamFromURL('postStart');
-  }
-
   if (document.getElementById('full_post').style.display != 'block') {
     window.scrollTo(0, 0);
+  }
+}
+
+/** Changes the CSS display: to display 10 posts from postsStartPosition */
+function displayTenMore() {
+  const posts=document.getElementsByClassName('single_post_container');
+
+  postPositionReal();
+  const postsEnd = postsStartPosition+10;
+  for (let i = postsStartPosition; i < postsEnd; i++) {
+    posts[i].style.display = 'block';
+    posts[i].style.order = 0;
   }
 }
 
@@ -187,14 +197,10 @@ async function writeFullPost(url) {
     const fetchURLResponse = await fetch(url);
     const pageContents = await fetchURLResponse.text();
     document.getElementById('full_post').style.display = 'block';
-    if (document.getElementById('search').value == '') {
-      document.getElementById('full_post').innerHTML = pageContents;
-    } else {
-      const searchTerm = document.getElementById('search').value;
-      const searchIgnoreCase = new RegExp('('+searchTerm+')', 'ig');
-      const highlightedPageContents = pageContents.replace(searchIgnoreCase,
-          '<span class="highlighted">' + '$1' + '</span>');
-      document.getElementById('full_post').innerHTML = highlightedPageContents;
+    document.getElementById('full_post').innerHTML = pageContents;
+    const searchValue = document.getElementById('search').value;
+    if (searchValue != '') {
+      window.find(searchValue);
     }
     document.getElementById('all_posts_container').style.display = 'none';
     document.getElementById('search').style.display = 'none';
@@ -220,10 +226,6 @@ function closeFullPost() {
 
 /** Clears the search results and displays all_posts_container */
 function clearSearchResults() {
-  highlighted = document.getElementsByClassName('highlighted');
-  for (let numH = 0; numH < highlighted.length; numH++) {
-    highlighted[numH].className = 'not_highlighted';
-  }
   document.getElementById('clear_search_results').style.display = 'none';
   document.getElementById('search').value = '';
   popParamFromURL('searchTerm');
@@ -234,55 +236,32 @@ function clearSearchResults() {
 /** Checks if the next posts should be displayed, then calls displayTen()
  * @return {false} - If this function returns, it is an error */
 function nextPage() {
+  window.removeEventListener('scroll', checkBottom, true);
   if (document.activeElement.id == 'search' ||
     document.getElementById('all_posts_container').style.display == 'none' ||
     document.getElementById('search').value ) {
     return false;
   }
   postsStartPosition = postsStartPosition+10;
-  postPositionReal();
   displayTen();
 }
 
 /** Checks if the previous posts should be displayed, then calls displayTen()
  * @return {false} - If this function returns, it is an error */
 function previousPage() {
-  // Requires displayTen from navbar.js
+  window.removeEventListener('scroll', checkBottom, true);
   if (document.activeElement.id == 'search' ||
     document.getElementById('all_posts_container').style.display == 'none' ||
     document.getElementById('search').value ) {
     return false;
   }
   postsStartPosition = postsStartPosition-10;
-  postPositionReal();
   displayTen();
-}
-
-/** Check window position and mouse direction, change page if at bottom or top
- * @param {string} event - The event passed from the event listener */
-function checkWheel(event) {
-  wheelDirection = event.deltaY < 0 ? 'up' : 'down';
-  if (wheelDirection == 'up' && window.pageYOffset == 0) {
-    previousPage();
-  } else if (wheelDirection == 'down' &&
-    (window.innerHeight + window.pageYOffset) >= document.body.offsetHeight) {
-    nextPage();
-  }
 }
 
 /** Checks the keys after an event, then processes them
  * @param {string} event - The event passed from the event listener */
 function checkKey(event) {
-  /** Check if window is scrolled all the way to the top, go previous if true
-   * @param {string} event - The event passed from the event listener */
-  function checkTopThenPrevious(event) {
-    if (window.pageYOffset == 0) {
-      if (previousPage()) {
-        event.preventDefault(); // Don't move page, if we reach here
-      }
-    }
-  }
-
   /** Check if window is scrolled all the way left, then go previous if true
    * @param {string} event - The event passed from the event listener */
   function checkLeftThenPrevious(event) {
@@ -303,32 +282,26 @@ function checkKey(event) {
     }
   }
 
-  /** Check if window is scrolled all the way to bottom, then go next if true
-   * @param {string} event - The event passed from the event listener */
-  function checkBottomThenNext(event) {
-    if ((window.innerHeight + window.pageYOffset) >=
-      document.body.offsetHeight) {
-      if (nextPage()) {
-        event.preventDefault(); // Don't move page, if we reach here
-      }
-    }
-  }
-
   event = event || window.event;
   switch (event.which || event.keyCode) {
-    case 34: // Page Down
-    case 40: // Down
-      checkBottomThenNext(event);
-      break;
-    case 33: // Page Up
-    case 38: // Up
-      checkTopThenPrevious(event);
-      break;
     case 37: // Left
       checkLeftThenPrevious(event);
       break;
     case 39: // Right
       checkRightThenNext(event);
       break;
+  }
+}
+
+/** Checks if we are at the bottom of the page, then loads more content
+ * @param {string} event - The event passed from the event listener */
+function checkBottom(event) {
+  if ((window.innerHeight + window.pageYOffset) >=
+    document.body.scrollHeight-10) {
+    postsStartPosition = postsStartPosition+10;
+    displayTenMore();
+    document.onkeydown = null;
+    document.getElementById('next_page').style.display = 'none';
+    document.getElementById('previous_page').style.display = 'none';
   }
 }

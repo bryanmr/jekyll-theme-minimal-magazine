@@ -42,8 +42,6 @@
         <!-- lunr.js search -->
         <input onkeydown="if(event.keyCode == 13){event.preventDefault(); return false;}" id="search" type="search" name="lunr_search" placeholder="lunr.js site search">
 
-        <a class="page_item" id="next_page" href="#" title="Next Posts" onclick="nextPage();return false">Next Posts</a>
-        <a class="page_item" id="previous_page" href="#" title="Previous Posts" onclick="previousPage();return false">Previous Posts</a>
         <a href="#" id="close_full_post" onclick="closeFullPost();return false">Close Displayed Content</a>
         <a href="#" id="clear_search_results" onclick="clearSearchResults();return false">Clear Search Results</a>
       </nav>
@@ -51,11 +49,14 @@
       <h1 id="headline">{{ site.title }} -- {{ site.description }}</h1>
     </header>
 
+    <a href="#" id="previous_page" title="Previous Posts" onclick="previousPage();return false"><nav class="page_turner">&#8249;</nav></a>
+    <a href="#" id="next_page" title="Next Posts" onclick="nextPage();return false"><nav class="page_turner">&#8250;</nav></a>
+
     <div id="all_posts_container">
       {%- for post in site.posts %}
       <div id="{{ post.permalink | sluggify }}" class="single_post_container" data-title="{{ post.title }}" data-categories="{{post.categories | join: ',' | default: 'None'}}" data-tags="{{post.tags | join: ',' | default: 'None'}}">
         <a href="#" onclick='writeFullPost("{{ post.permalink | relative_url }}");return false'>
-          <div class="bg_post_image" style="background: url({{ post.image | relative_url }});"></div>
+          <div class="bg_post_image" style="background-image: url({{ post.image | relative_url }});"></div>
           <div class="over_text">
             <span><b>Author:</b> {{post.author | default: 'None'}}</span><br>
             <span><b>Date:</b> {{post.date | date: "%B %d, %Y" | default: 'None'}}</span><br>
@@ -67,8 +68,7 @@
         </a>
       </div>
       {%- endfor %}
-      <div id="page_number">
-      </div>
+      <div id="page_number"></div>
     </div>
 
     <div class="full_post" id="full_post"></div>
