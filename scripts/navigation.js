@@ -92,16 +92,19 @@ function displayTen() {
   for (let i = 0; i < posts.length; i++) {
     posts[i].style.display = 'none';
   }
+
   const postsEnd = postsStartPosition+10;
   for (let i = postsStartPosition; i < postsEnd; i++) {
     posts[i].style.display = 'block';
     posts[i].style.order = 0;
   }
+
   if (postsStartPosition > 0) {
     updateURL('postStart='+((postsStartPosition/10)+1));
   } else {
     popParamFromURL('postStart');
   }
+
   if (document.getElementById('full_post').style.display != 'block') {
     window.scrollTo(0, 0);
   }

@@ -1,0 +1,25 @@
+#footer {
+  width: 100%;
+}
+#footer_spacer {
+  height: 50px;
+}
+@media only screen and (min-width: 768px) {
+  #advertisement {
+    float: right;
+  }
+  #copyright {
+    float: left;
+  }
+  #footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+}
+@media only screen and (max-width: 767px) {
+  #footer {
+    font: normal 12px Verdana, Arial, sans-serif;
+  }
+}

@@ -1,90 +1,76 @@
-.site_nav {
-  width: 100%;
-  display: inline-block;
+#header {
   padding: 0;
   margin: 0;
-}
-.close_full_post, .clear_search_results {
+  z-index: 1000;
   background-color: black;
-  float: right;
-  display: none;
-  margin-top: 10px;
 }
-.nav_list {
-  background-color: black;
-  display: inline-block;
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-  width: 100%;
-}
-.nav_list li {
+#header a {
+  text-decoration: none;
+  color: white;
+  padding: 0 20px 0;
+  margin: 5px 0px;
   text-align: center;
 }
-.site_nav a, .site_nav span {
-  color: white;
-  text-decoration: none;
-  padding-right: 20px;
-  padding-left: 20px;
+#header input {
+  padding: 0;
+  margin: 0 20px 0;
+  font: inherit;
 }
-li a:hover {
+#header h1 {
+  padding: 0;
+  margin: 0 20px 0;
+  clear: both;
+  color: white;
+}
+#header a:hover {
   background-color: SkyBlue;
 }
-.current_item {
-  background-color: MidnightBlue;
-}
-.search {
-  max-width: 90%;
-  text-align: center;
+#close_full_post, #clear_search_results, #search {
   display: none;
 }
-.full_post_image {
-  float: right;
+#close_full_post, #clear_search_results {
+  animation-duration: 3s;
+  animation-name: fadein;
 }
-.highlighted {
-  background-color: yellow;
-}
-.not_highlighted {
-  background-color: initial;
-}
-#advertisement {
-  float: right;
-}
-.contrast {
-  background-color: black;
-  color: white;
-  list-style-type: none;
-}
-.contrast a {
-  text-decoration: none;
-  color: white;
+@keyframes fadein {
+  from {
+    opacity: .2;
+    color: red;
+  }
+
+  to {
+    opacity: 1;
+    color: white;
+  }
 }
 @media only screen and (max-width: 767px) {
-  .nav_list, .search, .close_full_post, .clear_search_results {
+  #header {
     font: normal 28px Verdana, Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
   }
-  .search {
+  #search {
     margin: 0 auto;
+    max-width: 90%;
+    text-align: center;
+  }
+  #header h1 {
+    display: none;
+  }
+  #header a {
+    text-align: center;
+    float: left;
+    clear: both;
   }
 }
 @media only screen and (min-width: 768px) {
-  .site_nav {
-    position: -webkit-sticky; /* Safari */
-    position: sticky;
-    top: 0;
-    margin: 0;
-    padding: 0;
-    z-index: 1;
-  }
-  .nav_list {
-    margin: 0;
-    padding: 0;
-  }
-  .page_item, .search_item {
+  .page_item, #search {
     float: right;
   }
-  .nav_item, .current_item {
+  .nav_item {
     float: left;
-    overflow: hidden;
+  }
+  #close_full_post, #clear_search_results {
+    float: right;
   }
 }
