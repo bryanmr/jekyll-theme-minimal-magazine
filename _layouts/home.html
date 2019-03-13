@@ -2,11 +2,12 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <link rel="stylesheet" href="{{ '/css/site.css' | relative_url }}">
     <script src="{{ '/scripts/lunr.min.js' | relative_url }}"></script>
     <script src="{{ '/scripts/navigation.js' | relative_url }}"></script>
     <script>
+      {%- if site.categories -%}
       {%- capture site_categories -%}
         {%- for category in site.categories -%}
           '{{- category | first -}}'
@@ -14,8 +15,11 @@
             ,
           {%- endunless -%}
         {%- endfor -%}
-      {%- endcapture -%}
+      {%- endcapture %}
+      var categories = [{{ site_categories | default: "None" }}];
+      {%- endif -%}
 
+      {%- if site.tags -%}
       {%- capture site_tags -%}
         {%- for tag in site.tags -%}
           '{{- tag | first -}}'
@@ -24,8 +28,8 @@
           {%- endunless -%}
         {%- endfor -%}
       {%- endcapture %}
-      var categories = [{{ site_categories | default: "None" }}];
       var tags = [{{ site_tags | default: "None" }}]
+      {%- endif %}
     </script>
     {% seo %}
   </head>
@@ -33,12 +37,37 @@
     <div id="header_spacer"></div>
     <header id="header">
       <h1 id="headline">{{ site.title }} -- {{ site.description }}</h1>
-      <nav id="page_nav">
-        <a class="nav_item" href="{{ '/' | relative_url }}">Navigate Home</a>
+      <nav>
+        <a href="{{ '/' | relative_url }}">Navigate Home</a>
 
-        {%- for nav_target in site.navigation -%}
-        <a class="nav_item" href="#" onclick='writeFullPost("{{ nav_target.url | relative_url }}");return false'>{{ nav_target.text }}</a>
+        {%- for nav_target in site.navigation %}
+        <a href="#" onclick='writeFullPost("{{ nav_target.url | relative_url }}");return false'>{{ nav_target.text }}</a>
         {%- endfor %}
+
+        {%- if site.categories %}
+        <!-- Categories -->
+        <div class="dropdown">
+          <a tabindex="0" href="javascript:void(0)">Categories</a>
+          <div class="dropdown_content" role="menu" aria-haspopup="true" aria-expanded="false">
+            {%- for category in site.categories %}
+            <a href="#" onclick="displayCategory('{{ category | first }}');this.blur();return false">{{ category | first }}</a>
+            {%- endfor %}
+          </div>
+        </div>
+        {%- endif -%}
+
+        {%- if site.tags %}
+        <!-- Tags -->
+        <div class="dropdown">
+          <a tabindex="0" href="javascript:void(0)">Tags</a>
+          <div class="dropdown_content" role="menu" aria-haspopup="true" aria-expanded="false">
+            {%- for tag in site.tags limit:10 %}
+            <a href="#" onclick="displayTag('{{ tag | first }}');this.blur();return false">{{ tag | first }}</a>
+            {%- endfor %}
+            <a class="dropdown_more" href="#">Show All Tags</a>
+          </div>
+        </div>
+        {%- endif %}
 
         <div id="nav_spacer"></div>
 
@@ -55,7 +84,7 @@
 
     <div id="all_posts_container">
       {%- for post in site.posts %}
-      <div id="{{ post.permalink | sluggify }}" class="single_post_container" data-title="{{ post.title }}" data-categories="{{post.categories | join: ',' | default: 'None'}}" data-tags="{{post.tags | join: ',' | default: 'None'}}">
+      <div id="{{ post.permalink | sluggify }}" class="single_post_container" data-title="{{ post.title | xml_escape }}" data-categories="{{post.categories | join: ',' | default: 'None'}}" data-tags="{{post.tags | join: ',' | default: 'None'}}">
         <a href="#" onclick='writeFullPost("{{ post.permalink | relative_url }}");return false'>
           <div class="bg_post_image" style="background-image: url({{ post.image | relative_url }});"></div>
           <div class="over_text">
@@ -69,7 +98,6 @@
         </a>
       </div>
       {%- endfor %}
-      <div id="page_number"></div>
     </div>
 
     <div class="full_post" id="full_post"></div>
@@ -77,6 +105,7 @@
     <div id="footer_spacer"></div>
     <footer id="footer" class="contrast">
       <div id="copyright">Content Copyright {{ site.name }} in {{ site.time | date: '%Y' }}</div>
+      <div id="page_number"></div>
       <div id="advertisement"><a href="https://github.com/bryanmr/jekyll-theme-minimal-magazine">Jekyll Minimal Magazine</a> by <a href="https://bryanreese.net">Bryan Reese</a></div>
     </footer>
   </body>

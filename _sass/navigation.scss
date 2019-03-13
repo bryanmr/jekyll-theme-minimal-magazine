@@ -11,13 +11,12 @@
   z-index: 1000;
   background-color: black;
   position: fixed;
+  overflow: visible;
 }
 #header a {
   text-decoration: none;
   color: white;
-  padding: 0 20px 0;
-  margin: 5px 0px;
-  text-align: center;
+  padding: 5px 20px;
 }
 #header input {
   padding: 0;

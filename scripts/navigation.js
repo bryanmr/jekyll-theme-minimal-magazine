@@ -1,5 +1,7 @@
 /* exported goHome
 /* exported clearSearchResults */
+/* exported displayCategory */
+/* exported displayTag */
 /* eslint-disable */
 var lunrIndex = false;
 var postsStartPosition = 0;
@@ -85,7 +87,7 @@ function postPositionReal() {
     const currentPostPage = parseInt(((postsStartPosition+10)/10), 10);
     const postPagesTotal = parseInt((maxPosts/10), 10);
     document.getElementById('page_number').innerHTML =
-      '<span>Page '+currentPostPage+' of '+postPagesTotal+'</span>';
+      '<span>Displaying Page '+currentPostPage+' of '+postPagesTotal+'</span>';
   }
 }
 
@@ -138,16 +140,54 @@ function popParamFromURL(goner) {
   }
 }
 
-/** Searches lunrIndex using lunr.js and displays posts
- * @param {string} value - The search term */
-function doSearch(value) {
-  document.getElementById('clear_search_results').style.display = 'initial';
+/** Display a category in all_posts_container
+ * @param {string} category - The category to display */
+function displayCategory(category) {
   document.getElementById('page_number').style.display = 'none';
+
   posts=document.getElementsByClassName('single_post_container');
   for (let i = 0; i < posts.length; i++) {
     posts[i].style.display = 'none';
     posts[i].style.order = 0;
   }
+
+  displayPosts = document.querySelectorAll('[data-categories*="'+category+'"]');
+  for (let i = 0; i < displayPosts.length; i++) {
+    displayPosts[i].style.display = 'block';
+    displayPosts[i].style.order = 0;
+  }
+}
+
+/** Display a tag in all_posts_container
+ * @param {string} tag - The tag to display */
+function displayTag(tag) {
+  document.getElementById('page_number').style.display = 'none';
+
+  posts=document.getElementsByClassName('single_post_container');
+  for (let i = 0; i < posts.length; i++) {
+    posts[i].style.display = 'none';
+    posts[i].style.order = 0;
+  }
+
+  displayPosts = document.querySelectorAll('[data-tags*="'+tag+'"]');
+  for (let i = 0; i < displayPosts.length; i++) {
+    displayPosts[i].style.display = 'block';
+    displayPosts[i].style.order = 0;
+  }
+}
+
+/** Searches lunrIndex using lunr.js and displays posts
+ * @param {string} value - The search term */
+function doSearch(value) {
+  document.getElementById('clear_search_results').style.display = 'initial';
+  document.getElementById('page_number').style.display = 'none';
+
+  posts=document.getElementsByClassName('single_post_container');
+  for (let i = 0; i < posts.length; i++) {
+    posts[i].style.display = 'none';
+    posts[i].style.order = 0;
+  }
+
   if (value.target.value) {
     lunrResults = lunrIndex.search(value.target.value);
     lunrResults.forEach(displaySearchResult);
@@ -287,11 +327,17 @@ function checkKey(event) {
  * @param {object} event - The event passed from the event listener */
 function checkScroll(event) {
   if (lastScrollPosition > window.pageYOffset) {
+    const Height =
+      window.getComputedStyle(document.getElementById('header_spacer')).height;
     document.getElementById('header').style.display = 'flex';
+    document.getElementById('previous_page').style.top = Height;
+    document.getElementById('next_page').style.top = Height;
   } else {
     document.getElementById('header').style.display = 'none';
+    document.getElementById('previous_page').style.top = 0;
+    document.getElementById('next_page').style.top = 0;
+    checkScrollBottom();
   }
-  checkScrollBottom();
   lastScrollPosition = window.pageYOffset;
 }
 
@@ -300,12 +346,9 @@ function checkScroll(event) {
 function checkScrollBottom() {
   if (document.activeElement.id == 'search' ||
     document.getElementById('all_posts_container').style.display == 'none' ||
-    document.getElementById('search').value ||
-    window.pageYOffset < lastScrollPosition ) {
+    document.getElementById('search').value) {
     return false;
-  }
-
-  if ((window.innerHeight + window.pageYOffset) >=
+  } else if ((window.innerHeight + window.pageYOffset) >=
     document.body.scrollHeight-10) {
     displayTenMore();
   }

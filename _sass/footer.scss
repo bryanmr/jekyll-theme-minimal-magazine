@@ -2,6 +2,7 @@
   width: 100%;
   bottom: 0;
   position: fixed;
+  display: flex;
 }
 #footer_spacer {
   height: 50px;
@@ -9,15 +10,13 @@
   width: 100%;
 }
 @media only screen and (min-width: 768px) {
-  #advertisement {
-    float: right;
-  }
-  #copyright {
-    float: left;
+  #footer {
+    justify-content: space-between;
   }
 }
 @media only screen and (max-width: 767px) {
   #footer {
     font: normal 12px Verdana, Arial, sans-serif;
+    flex-direction: column;
   }
 }

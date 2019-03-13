@@ -35,10 +35,6 @@
 .over_text {
   display: none;
 }
-#page_number {
-  flex-basis: 100%;
-  text-align: right;
-}
 @media only screen and (max-width: 767px) {
   .single_post_container {
     flex: 0 1 150px;
