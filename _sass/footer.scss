@@ -1,5 +1,6 @@
 #footer {
   width: 100%;
+  bottom: 0;
 }
 #footer_spacer {
   height: 50px;
@@ -13,9 +14,6 @@
   }
   #footer {
     position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
   }
 }
 @media only screen and (max-width: 767px) {

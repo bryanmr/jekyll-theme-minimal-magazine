@@ -3,13 +3,15 @@
 /* eslint-disable */
 var lunrIndex = false;
 var postsStartPosition = 0;
+var lastScrollPosition = 0;
 /* eslint-enable */
 
 document.addEventListener('DOMContentLoaded', function() {
-  window.addEventListener('scroll', checkBottom, true);
+  window.addEventListener('scroll', checkScroll, true);
   document.onkeydown = checkKey;
   window.onpopstate = handleBrowserBack;
   footerHeightSet();
+  headerHeightSet();
   initializePage();
 });
 
@@ -24,6 +26,13 @@ function footerHeightSet() {
   const footerHeight =
     window.getComputedStyle(document.getElementById('footer')).height;
   document.getElementById('footer_spacer').style.height = footerHeight;
+}
+
+/** Sets the footer spacer to match the footer, no wasted space */
+function headerHeightSet() {
+  const headerHeight =
+    window.getComputedStyle(document.getElementById('header')).height;
+  document.getElementById('header_spacer').style.height = headerHeight;
 }
 
 /** Gets the page ready to be displayed */
@@ -294,8 +303,9 @@ function checkKey(event) {
 }
 
 /** Checks if we are at the bottom of the page, then loads more content
+ * Also checks which direction we are scrolling and changes content displayed
  * @param {string} event - The event passed from the event listener */
-function checkBottom(event) {
+function checkScroll(event) {
   if ((window.innerHeight + window.pageYOffset) >=
     document.body.scrollHeight-10) {
     postsStartPosition = postsStartPosition+10;
@@ -304,4 +314,18 @@ function checkBottom(event) {
     document.getElementById('next_page').style.display = 'none';
     document.getElementById('previous_page').style.display = 'none';
   }
+
+  const currentPosition = window.pageYOffset;
+  if (lastScrollPosition > currentPosition) {
+    document.getElementById('footer').style.position = 'fixed';
+    document.getElementById('header').style.position = 'fixed';
+    document.getElementById('header').style.display = 'flex';
+    document.getElementById('header_spacer').style.display = 'initial';
+  } else {
+    document.getElementById('footer').style.position = 'initial';
+    document.getElementById('header').style.position = 'initial';
+    document.getElementById('header').style.display = 'none';
+    document.getElementById('header_spacer').style.display = 'none';
+  }
+  lastScrollPosition = currentPosition;
 }

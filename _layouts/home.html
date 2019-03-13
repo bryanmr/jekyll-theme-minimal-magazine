@@ -3,9 +3,9 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
-    <link rel="stylesheet" href="{{ "/css/site.css" | relative_url }}">
-    <script src="{{ "/scripts/lunr.min.js" | relative_url }}"></script>
-    <script src="{{ "/scripts/navigation.js" | relative_url }}"></script>
+    <link rel="stylesheet" href="{{ '/css/site.css' | relative_url }}">
+    <script src="{{ '/scripts/lunr.min.js' | relative_url }}"></script>
+    <script src="{{ '/scripts/navigation.js' | relative_url }}"></script>
     <script>
       {%- capture site_categories -%}
         {%- for category in site.categories -%}
@@ -30,7 +30,9 @@
     {% seo %}
   </head>
   <body>
+    <div id="header_spacer"></div>
     <header id="header">
+      <h1 id="headline">{{ site.title }} -- {{ site.description }}</h1>
       <nav id="page_nav">
         {%- for nav_target in site.navigation -%}
         {%- if page.url == nav_target.url %}
@@ -39,14 +41,15 @@
         <a class="nav_item" href="#" onclick='writeFullPost("{{ nav_target.url | relative_url }}");return false'>{{ nav_target.text }}</a>
         {%- endif -%}
         {%- endfor %}
+
+        <div id="nav_spacer"></div>
+
         <!-- lunr.js search -->
         <input onkeydown="if(event.keyCode == 13){event.preventDefault(); return false;}" id="search" type="search" name="lunr_search" placeholder="lunr.js site search">
 
         <a href="#" id="close_full_post" onclick="closeFullPost();return false">Close Displayed Content</a>
         <a href="#" id="clear_search_results" onclick="clearSearchResults();return false">Clear Search Results</a>
       </nav>
-
-      <h1 id="headline">{{ site.title }} -- {{ site.description }}</h1>
     </header>
 
     <a href="#" id="previous_page" title="Previous Posts" onclick="previousPage();return false"><nav class="page_turner">&#8249;</nav></a>
