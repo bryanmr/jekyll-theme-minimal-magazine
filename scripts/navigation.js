@@ -304,8 +304,22 @@ function checkKey(event) {
 
 /** Checks if we are at the bottom of the page, then loads more content
  * Also checks which direction we are scrolling and changes content displayed
- * @param {string} event - The event passed from the event listener */
+ * @param {string} event - The event passed from the event listener
+ * @return {false} - If this function returns, it is an error */
 function checkScroll(event) {
+  if (lastScrollPosition > window.pageYOffset) {
+    document.getElementById('header').style.display = 'flex';
+  } else {
+    document.getElementById('header').style.display = 'none';
+  }
+  lastScrollPosition = window.pageYOffset;
+
+  if (document.activeElement.id == 'search' ||
+    document.getElementById('all_posts_container').style.display == 'none' ||
+    document.getElementById('search').value ) {
+    return false;
+  }
+
   if ((window.innerHeight + window.pageYOffset) >=
     document.body.scrollHeight-10) {
     postsStartPosition = postsStartPosition+10;
@@ -314,18 +328,4 @@ function checkScroll(event) {
     document.getElementById('next_page').style.display = 'none';
     document.getElementById('previous_page').style.display = 'none';
   }
-
-  const currentPosition = window.pageYOffset;
-  if (lastScrollPosition > currentPosition) {
-    document.getElementById('footer').style.position = 'fixed';
-    document.getElementById('header').style.position = 'fixed';
-    document.getElementById('header').style.display = 'flex';
-    document.getElementById('header_spacer').style.display = 'initial';
-  } else {
-    document.getElementById('footer').style.position = 'initial';
-    document.getElementById('header').style.position = 'initial';
-    document.getElementById('header').style.display = 'none';
-    document.getElementById('header_spacer').style.display = 'none';
-  }
-  lastScrollPosition = currentPosition;
 }
