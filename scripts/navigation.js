@@ -8,10 +8,11 @@ var lastScrollPosition = 0;
 
 document.addEventListener('DOMContentLoaded', function() {
   window.addEventListener('scroll', checkScroll, true);
+  document.addEventListener('wheel', checkScrollBottom, true);
   document.onkeydown = checkKey;
   window.onpopstate = handleBrowserBack;
-  footerHeightSet();
-  headerHeightSet();
+  elementHeightSet('footer', 'footer_spacer');
+  elementHeightSet('header', 'header_spacer');
   initializePage();
 });
 
@@ -21,18 +22,13 @@ function handleBrowserBack() {
   location.reload();
 }
 
-/** Sets the footer spacer to match the footer, no wasted space */
-function footerHeightSet() {
-  const footerHeight =
-    window.getComputedStyle(document.getElementById('footer')).height;
-  document.getElementById('footer_spacer').style.height = footerHeight;
-}
-
-/** Sets the footer spacer to match the footer, no wasted space */
-function headerHeightSet() {
-  const headerHeight =
-    window.getComputedStyle(document.getElementById('header')).height;
-  document.getElementById('header_spacer').style.height = headerHeight;
+/** Sets the footer spacer to match the footer, no wasted space
+ * @param {string} source - Where the height value is being copied from
+ * @param {string} target - Where the height value is being copied to */
+function elementHeightSet(source, target) {
+  const elementHeight =
+    window.getComputedStyle(document.getElementById(source)).height;
+  document.getElementById(target).style.height = elementHeight;
 }
 
 /** Gets the page ready to be displayed */
@@ -46,11 +42,6 @@ async function initializePage() {
     doSearch({target: {value: searchTerm}}); // This is the expected format
   } else {
     displayTen();
-    if ((window.innerHeight + window.pageYOffset) >=
-      document.body.scrollHeight-10) {
-      postsStartPosition = postsStartPosition+10;
-      displayTenMore();
-    }
   }
   writeFullPost(getSetValue('content'));
 }
@@ -98,28 +89,16 @@ function postPositionReal() {
   }
 }
 
-/** Changes the CSS display: to display 10 posts from postsStartPosition */
+/** Displays 10 posts from postsStartPosition */
 function displayTen() {
+  if (document.getElementById('full_post').style.display != 'block') {
+    window.scrollTo(0, 0);
+  }
+
   const posts=document.getElementsByClassName('single_post_container');
   for (let i = 0; i < posts.length; i++) {
     posts[i].style.display = 'none';
   }
-
-  postPositionReal();
-  const postsEnd = postsStartPosition+10;
-  for (let i = postsStartPosition; i < postsEnd; i++) {
-    posts[i].style.display = 'block';
-    posts[i].style.order = 0;
-  }
-
-  if (document.getElementById('full_post').style.display != 'block') {
-    window.scrollTo(0, 0);
-  }
-}
-
-/** Changes the CSS display: to display 10 posts from postsStartPosition */
-function displayTenMore() {
-  const posts=document.getElementsByClassName('single_post_container');
 
   postPositionReal();
   const postsEnd = postsStartPosition+10;
@@ -245,7 +224,6 @@ function clearSearchResults() {
 /** Checks if the next posts should be displayed, then calls displayTen()
  * @return {false} - If this function returns, it is an error */
 function nextPage() {
-  window.removeEventListener('scroll', checkBottom, true);
   if (document.activeElement.id == 'search' ||
     document.getElementById('all_posts_container').style.display == 'none' ||
     document.getElementById('search').value ) {
@@ -258,7 +236,6 @@ function nextPage() {
 /** Checks if the previous posts should be displayed, then calls displayTen()
  * @return {false} - If this function returns, it is an error */
 function previousPage() {
-  window.removeEventListener('scroll', checkBottom, true);
   if (document.activeElement.id == 'search' ||
     document.getElementById('all_posts_container').style.display == 'none' ||
     document.getElementById('search').value ) {
@@ -269,7 +246,7 @@ function previousPage() {
 }
 
 /** Checks the keys after an event, then processes them
- * @param {string} event - The event passed from the event listener */
+ * @param {object} event - The event passed from the event listener */
 function checkKey(event) {
   /** Check if window is scrolled all the way left, then go previous if true
    * @param {string} event - The event passed from the event listener */
@@ -293,6 +270,10 @@ function checkKey(event) {
 
   event = event || window.event;
   switch (event.which || event.keyCode) {
+    case 34: // Page Down
+    case 40: // Down
+      checkScrollBottom();
+      break;
     case 37: // Left
       checkLeftThenPrevious(event);
       break;
@@ -302,30 +283,43 @@ function checkKey(event) {
   }
 }
 
-/** Checks if we are at the bottom of the page, then loads more content
- * Also checks which direction we are scrolling and changes content displayed
- * @param {string} event - The event passed from the event listener
- * @return {false} - If this function returns, it is an error */
+/** Checks which direction we are scrolling and hides or shows header
+ * @param {object} event - The event passed from the event listener */
 function checkScroll(event) {
   if (lastScrollPosition > window.pageYOffset) {
     document.getElementById('header').style.display = 'flex';
   } else {
     document.getElementById('header').style.display = 'none';
   }
+  checkScrollBottom();
   lastScrollPosition = window.pageYOffset;
+}
 
+/** Checks if we are at the bottom of the page, then loads more content
+ * @return {false} - If this function returns, it is an error */
+function checkScrollBottom() {
   if (document.activeElement.id == 'search' ||
     document.getElementById('all_posts_container').style.display == 'none' ||
-    document.getElementById('search').value ) {
+    document.getElementById('search').value ||
+    window.pageYOffset < lastScrollPosition ) {
     return false;
   }
 
   if ((window.innerHeight + window.pageYOffset) >=
     document.body.scrollHeight-10) {
-    postsStartPosition = postsStartPosition+10;
     displayTenMore();
-    document.onkeydown = null;
-    document.getElementById('next_page').style.display = 'none';
-    document.getElementById('previous_page').style.display = 'none';
+  }
+
+  /** Displays ten more posts from postsStartPosition */
+  function displayTenMore() {
+    postsStartPosition = postsStartPosition+10;
+    const posts=document.getElementsByClassName('single_post_container');
+
+    postPositionReal();
+    const postsEnd = postsStartPosition+10;
+    for (let i = postsStartPosition; i < postsEnd; i++) {
+      posts[i].style.display = 'block';
+      posts[i].style.order = 0;
+    }
   }
 }
