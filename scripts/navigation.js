@@ -2,6 +2,7 @@
 /* exported clearSearchResults */
 /* exported displayCategory */
 /* exported displayTag */
+/* exported displayAllTags */
 /* eslint-disable */
 var lunrIndex = false;
 var postsStartPosition = 0;
@@ -55,6 +56,11 @@ function goHome() {
   postsStartPosition = 0;
   document.getElementById('search').value = '';
   displayTen();
+}
+
+/** Displays the tag cloud */
+function displayAllTags() {
+  document.getElementById('tags').style.display = 'block';
 }
 
 /** Reads the value of HTTP get values

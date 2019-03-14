@@ -64,7 +64,7 @@
             {%- for tag in site.tags limit:10 %}
             <a href="#" onclick="displayTag('{{ tag | first }}');this.blur();return false">{{ tag | first }}</a>
             {%- endfor %}
-            <a class="dropdown_more" href="#">Show All Tags</a>
+            <a class="dropdown_more" href="#" onclick="displayAllTags();this.blur();return false">Show All Tags</a>
           </div>
         </div>
         {%- endif %}
@@ -81,6 +81,15 @@
 
     <a href="#" id="previous_page" title="Previous Posts" onclick="previousPage();return false"><nav class="page_turner">&#8249;</nav></a>
     <a href="#" id="next_page" title="Next Posts" onclick="nextPage();return false"><nav class="page_turner">&#8250;</nav></a>
+
+    {%- if site.tags %}
+    <div id="tags">
+      {%- for tag in site.tags %}
+      <a style="font-size: {{ tag | last | size | times: 3 | plus: 18 }}px" href="#" onclick="displayTag('{{ tag | first }}');this.blur();return false">{{ tag | first }} ({{ tag | last | size }})</a>
+      {%- endfor %}
+    </div>
+    {%- endif %}
+
 
     <div id="all_posts_container">
       {%- for post in site.posts %}
