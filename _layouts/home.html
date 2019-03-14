@@ -16,7 +16,7 @@
         <a href="{{ '/' | relative_url }}">🏠 Home</a>
 
         {%- if site.categories %}
-        <div class="dropdown">
+        <div id="categories_nav" class="dropdown">
           <a tabindex="0" href="javascript:void(0)">📔 Categories</a>
           <div class="dropdown_content" role="menu" aria-haspopup="true" aria-expanded="false">
             {%- for category in site.categories %}
@@ -27,7 +27,7 @@
         {%- endif -%}
 
         {%- if site.tags %}
-        <div class="dropdown">
+        <div id="tags_nav" class="dropdown">
           <a tabindex="0" href="javascript:void(0)">🏷️ Tags</a>
           <div class="dropdown_content" role="menu" aria-haspopup="true" aria-expanded="false">
             {%- for tag in site.tags limit:10 %}
@@ -48,9 +48,9 @@
         <!-- lunr.js search -->
         <input onkeydown="if(event.keyCode == 13){event.preventDefault(); return false;}" id="search" type="search" name="lunr_search" placeholder="lunr.js site search">
 
-        <a href="#" id="close_full_post" onclick="closeFullPost();return false">Close Displayed Content</a>
-        <a href="#" id="clear_search_results" onclick="clearSearchResults();return false">Clear Search Results</a>
-        <a href="#" id="close_tags" onclick="closeTagsDisplay();return false">Close Tags Display</a>
+        <a href="#" id="close_full_post" onclick="closeFullPost();return false">❌ Close Displayed Content</a>
+        <a href="#" id="clear_search_results" onclick="clearSearchResults();return false">❌ Clear Search Results</a>
+        <a href="#" id="close_tags" onclick="closeTagsDisplay();return false">❌ Close Tags and Categories</a>
       </nav>
     </header>
 

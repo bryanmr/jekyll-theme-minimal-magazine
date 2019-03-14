@@ -40,15 +40,20 @@ async function initializePage() {
   if (!lunrIndex) {
     await initializeSearch('/vg/lunr_serialized.json');
   }
+
+  document.getElementById('close_full_post').style.display = 'none';
+  document.getElementById('close_tags').style.display = 'none';
+  document.getElementById('clear_search_results').style.display = 'none';
+
   const searchTerm = getSetValue('searchTerm');
   if (searchTerm) {
     hideNav();
     document.getElementById('search').value = getSetValue('searchTerm');
     doSearch({target: {value: searchTerm}}); // This is the expected format
   } else {
-    showNav();
     displayTen();
   }
+
   writeFullPost(getSetValue('content'));
 }
 
@@ -84,13 +89,6 @@ function displayAllTags() {
   showAllPostsContainer();
   document.getElementById('tags').style.display = 'flex';
   document.getElementById('close_tags').style.display = 'block';
-}
-
-/** Closes the tag cloud */
-function closeTagsDisplay() {
-  document.getElementById('tags').style.display = 'none';
-  document.getElementById('close_tags').style.display = 'none';
-  displayTen();
 }
 
 /** Reads the value of HTTP get values
@@ -162,6 +160,7 @@ function displayCategory(category) {
   closeTagsDisplay();
   hideNav();
   hideAllPosts();
+  document.getElementById('close_tags').style.display = 'block';
 
   const selectedPosts =
     document.querySelectorAll('[data-categories*="'+category+'"]');
@@ -183,6 +182,7 @@ function displayTag(tag) {
   closeTagsDisplay();
   hideNav();
   hideAllPosts();
+  document.getElementById('close_tags').style.display = 'block';
 
   const selectedPosts =
     document.querySelectorAll('[data-tags*="'+tag+'"]');
@@ -192,6 +192,8 @@ function displayTag(tag) {
 /** Searches lunrIndex using lunr.js and displays posts
  * @param {string} value - The search term */
 function doSearch(value) {
+  document.getElementById('tags_nav').style.display = 'none';
+  document.getElementById('categories_nav').style.display = 'none';
   document.getElementById('clear_search_results').style.display = 'initial';
   document.getElementById('search').style.display = 'block';
   document.getElementById('search').focus();
@@ -254,8 +256,17 @@ function closeFullPost() {
 /** Clears the search results and displays all_posts_container */
 function clearSearchResults() {
   document.getElementById('clear_search_results').style.display = 'none';
+  document.getElementById('tags_nav').style.display = 'initial';
+  document.getElementById('categories_nav').style.display = 'initial';
   document.getElementById('search').value = '';
   popParamFromURL('searchTerm');
+  displayTen();
+}
+
+/** Closes the tag cloud */
+function closeTagsDisplay() {
+  document.getElementById('tags').style.display = 'none';
+  document.getElementById('close_tags').style.display = 'none';
   displayTen();
 }
 
@@ -388,7 +399,7 @@ function showPosts(howMany) {
 }
 
 /** Checks if we are in a state where navigation should occur
- * @return {bool} - Returns false when we should not try to navigate */
+ * @return {bool} - Returns true when we should not try to navigate */
 function notNavigable() {
   if (document.activeElement.id == 'search' ||
     document.getElementById('all_posts_container').style.display == 'none' ||
@@ -411,15 +422,24 @@ function hideNav() {
   document.getElementById('page_number').style.display = 'none';
 }
 
-/** Shows all the navigation elements
- * @return {bool} - Returns false when we should not display navigation */
+/** Shows all the navigation elements */
 function showNav() {
-  if (notNavigable()) {
-    return false;
-  } else {
+  if (noOpenContent()) {
     document.getElementById('search').style.display = 'block';
     document.getElementById('next_page').style.display = 'initial';
     document.getElementById('previous_page').style.display = 'initial';
     document.getElementById('page_number').style.display = 'initial';
+  }
+}
+
+/** Returns true if we have a content tab open
+ * @return {bool} - Returns true when there is no content blocking */
+function noOpenContent() {
+  if (document.getElementById('close_full_post').style.display == 'none' &&
+    document.getElementById('close_tags').style.display == 'none' &&
+    document.getElementById('clear_search_results').style.display == 'none') {
+    return true;
+  } else {
+    return false;
   }
 }
