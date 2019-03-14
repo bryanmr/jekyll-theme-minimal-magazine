@@ -67,6 +67,9 @@
   #previous_page, #next_page {
     display: none;
   }
+  .page_turner {
+    display: none;
+  }
 }
 @media only screen and (min-width: 768px) {
   #header {
