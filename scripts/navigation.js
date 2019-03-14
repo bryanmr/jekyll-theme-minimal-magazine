@@ -1,5 +1,6 @@
-/* exported goHome
 /* exported clearSearchResults */
+/* exported closeFullPost */
+/* exported closeTagsDisplay */
 /* exported displayCategory */
 /* exported displayTag */
 /* exported displayAllTags */
@@ -41,26 +42,55 @@ async function initializePage() {
   }
   const searchTerm = getSetValue('searchTerm');
   if (searchTerm) {
+    hideNav();
     document.getElementById('search').value = getSetValue('searchTerm');
     doSearch({target: {value: searchTerm}}); // This is the expected format
   } else {
+    showNav();
     displayTen();
   }
   writeFullPost(getSetValue('content'));
 }
 
-/** Clears URL get parameters and displays landing page. */
-function goHome() {
-  window.history.pushState({}, '', window.location.pathname);
-  closeFullPost();
-  postsStartPosition = 0;
-  document.getElementById('search').value = '';
-  displayTen();
+/** Clears what is being displayed, so it can be built back up */
+function hideEverything() {
+  hideNav();
+  hideAllPosts();
+  document.getElementById('tags').style.display = 'none';
+  document.getElementById('full_post').style.display = 'none';
+  document.getElementById('all_posts_container').style.display = 'none';
+}
+
+/** Shows the all_posts_container */
+function showAllPostsContainer() {
+  document.getElementById('all_posts_container').style.display = 'flex';
+  document.getElementById('full_post').style.display = 'none';
+  document.getElementById('close_full_post').style.display = 'none';
+  window.scrollTo(0, 0);
+}
+
+/** Shows the all_posts_container */
+function showFullPostsContainer() {
+  document.getElementById('all_posts_container').style.display = 'none';
+  document.getElementById('tags').style.display = 'none';
+  document.getElementById('full_post').style.display = 'block';
+  document.getElementById('close_full_post').style.display = 'initial';
+  hideNav();
 }
 
 /** Displays the tag cloud */
 function displayAllTags() {
-  document.getElementById('tags').style.display = 'block';
+  hideEverything();
+  showAllPostsContainer();
+  document.getElementById('tags').style.display = 'flex';
+  document.getElementById('close_tags').style.display = 'block';
+}
+
+/** Closes the tag cloud */
+function closeTagsDisplay() {
+  document.getElementById('tags').style.display = 'none';
+  document.getElementById('close_tags').style.display = 'none';
+  displayTen();
 }
 
 /** Reads the value of HTTP get values
@@ -76,26 +106,6 @@ function getSetValue(key) {
   }
 }
 
-/** Checks if we have posts to display at postsStartPosition */
-function postPositionReal() {
-  const maxPosts =
-    document.getElementsByClassName('single_post_container').length;
-  if (postsStartPosition >= maxPosts) {
-    postsStartPosition = maxPosts - 10;
-  } else if (postsStartPosition < 0) {
-    postsStartPosition = 0;
-  }
-  displayPostCount(maxPosts);
-
-  /** Function to update the post count display on page
-   * @param {number} maxPosts - How many posts we found on the page */
-  function displayPostCount(maxPosts) {
-    const currentPostPage = parseInt(((postsStartPosition+10)/10), 10);
-    const postPagesTotal = parseInt((maxPosts/10), 10);
-    document.getElementById('page_number').innerHTML =
-      '<span>Displaying Page '+currentPostPage+' of '+postPagesTotal+'</span>';
-  }
-}
 
 /** Displays 10 posts from postsStartPosition */
 function displayTen() {
@@ -103,16 +113,16 @@ function displayTen() {
     window.scrollTo(0, 0);
   }
 
+  showNav();
+  hideAllPosts();
+  showPosts(10);
+}
+
+/** Hide all the posts */
+function hideAllPosts() {
   const posts=document.getElementsByClassName('single_post_container');
   for (let i = 0; i < posts.length; i++) {
     posts[i].style.display = 'none';
-  }
-
-  postPositionReal();
-  const postsEnd = postsStartPosition+10;
-  for (let i = postsStartPosition; i < postsEnd; i++) {
-    posts[i].style.display = 'block';
-    posts[i].style.order = 0;
   }
 }
 
@@ -149,15 +159,18 @@ function popParamFromURL(goner) {
 /** Display a category in all_posts_container
  * @param {string} category - The category to display */
 function displayCategory(category) {
-  document.getElementById('page_number').style.display = 'none';
+  closeTagsDisplay();
+  hideNav();
+  hideAllPosts();
 
-  posts=document.getElementsByClassName('single_post_container');
-  for (let i = 0; i < posts.length; i++) {
-    posts[i].style.display = 'none';
-    posts[i].style.order = 0;
-  }
+  const selectedPosts =
+    document.querySelectorAll('[data-categories*="'+category+'"]');
+  showAllSelectedPosts(selectedPosts);
+}
 
-  displayPosts = document.querySelectorAll('[data-categories*="'+category+'"]');
+/** Display all posts contained on selected object
+ * @param {object} displayPosts - The object selected for */
+function showAllSelectedPosts(displayPosts) {
   for (let i = 0; i < displayPosts.length; i++) {
     displayPosts[i].style.display = 'block';
     displayPosts[i].style.order = 0;
@@ -167,42 +180,34 @@ function displayCategory(category) {
 /** Display a tag in all_posts_container
  * @param {string} tag - The tag to display */
 function displayTag(tag) {
-  document.getElementById('page_number').style.display = 'none';
+  closeTagsDisplay();
+  hideNav();
+  hideAllPosts();
 
-  posts=document.getElementsByClassName('single_post_container');
-  for (let i = 0; i < posts.length; i++) {
-    posts[i].style.display = 'none';
-    posts[i].style.order = 0;
-  }
-
-  displayPosts = document.querySelectorAll('[data-tags*="'+tag+'"]');
-  for (let i = 0; i < displayPosts.length; i++) {
-    displayPosts[i].style.display = 'block';
-    displayPosts[i].style.order = 0;
-  }
+  const selectedPosts =
+    document.querySelectorAll('[data-tags*="'+tag+'"]');
+  showAllSelectedPosts(selectedPosts);
 }
 
 /** Searches lunrIndex using lunr.js and displays posts
  * @param {string} value - The search term */
 function doSearch(value) {
   document.getElementById('clear_search_results').style.display = 'initial';
-  document.getElementById('page_number').style.display = 'none';
-
-  posts=document.getElementsByClassName('single_post_container');
-  for (let i = 0; i < posts.length; i++) {
-    posts[i].style.display = 'none';
-    posts[i].style.order = 0;
-  }
+  document.getElementById('search').style.display = 'block';
+  document.getElementById('search').focus();
+  hideNav();
+  hideAllPosts();
 
   if (value.target.value) {
-    lunrResults = lunrIndex.search(value.target.value);
-    lunrResults.forEach(displaySearchResult);
-    updateURL('searchTerm='+value.target.value);
-    window.scrollTo(0, 0);
+    const lunrResults = lunrIndex.search(value.target.value);
+    if (lunrResults.length > 0) {
+      lunrResults.forEach(displaySearchResult);
+      updateURL('searchTerm='+value.target.value);
+      window.scrollTo(0, 0);
+    }
   } else {
     popParamFromURL('searchTerm');
     displayTen();
-    document.getElementById('page_number').style.display = 'initial';
   }
 
   /** Creates the lunr.js search index variable named lunrIndex
@@ -230,17 +235,10 @@ async function writeFullPost(url) {
   if (url) {
     const fetchURLResponse = await fetch(url);
     const pageContents = await fetchURLResponse.text();
-    document.getElementById('full_post').style.display = 'block';
     document.getElementById('full_post').innerHTML = pageContents;
-    const searchValue = document.getElementById('search').value;
-    if (searchValue != '') {
-      window.find(searchValue);
-    }
-    document.getElementById('all_posts_container').style.display = 'none';
-    document.getElementById('search').style.display = 'none';
-    document.getElementById('next_page').style.display = 'none';
-    document.getElementById('previous_page').style.display = 'none';
-    document.getElementById('close_full_post').style.display = 'initial';
+
+    showFullPostsContainer();
+
     updateURL('content='+url);
     window.scrollTo(0, 0);
   }
@@ -248,14 +246,9 @@ async function writeFullPost(url) {
 
 /** Closes the full_post div and opens back the all_posts_container */
 function closeFullPost() {
-  document.getElementById('full_post').style.display = 'none';
-  document.getElementById('close_full_post').style.display = 'none';
-  document.getElementById('all_posts_container').style.display = 'flex';
-  document.getElementById('next_page').style.display = 'initial';
-  document.getElementById('previous_page').style.display = 'initial';
-  document.getElementById('search').style.display = 'block';
+  showAllPostsContainer(); // Closes full_post
+  showNav();
   popParamFromURL('content');
-  window.scrollTo(0, 0);
 }
 
 /** Clears the search results and displays all_posts_container */
@@ -263,16 +256,13 @@ function clearSearchResults() {
   document.getElementById('clear_search_results').style.display = 'none';
   document.getElementById('search').value = '';
   popParamFromURL('searchTerm');
-  document.getElementById('page_number').style.display = 'initial';
   displayTen();
 }
 
 /** Checks if the next posts should be displayed, then calls displayTen()
  * @return {false} - If this function returns, it is an error */
 function nextPage() {
-  if (document.activeElement.id == 'search' ||
-    document.getElementById('all_posts_container').style.display == 'none' ||
-    document.getElementById('search').value ) {
+  if (notNavigable()) {
     return false;
   }
   postsStartPosition = postsStartPosition+10;
@@ -282,9 +272,7 @@ function nextPage() {
 /** Checks if the previous posts should be displayed, then calls displayTen()
  * @return {false} - If this function returns, it is an error */
 function previousPage() {
-  if (document.activeElement.id == 'search' ||
-    document.getElementById('all_posts_container').style.display == 'none' ||
-    document.getElementById('search').value ) {
+  if (notNavigable()) {
     return false;
   }
   postsStartPosition = postsStartPosition-10;
@@ -348,11 +336,9 @@ function checkScroll(event) {
 }
 
 /** Checks if we are at the bottom of the page, then loads more content
- * @return {false} - If this function returns, it is an error */
+ * @return {bool} - If this function returns, it is an error */
 function checkScrollBottom() {
-  if (document.activeElement.id == 'search' ||
-    document.getElementById('all_posts_container').style.display == 'none' ||
-    document.getElementById('search').value) {
+  if (notNavigable()) {
     return false;
   } else if ((window.innerHeight + window.pageYOffset) >=
     document.body.scrollHeight-10) {
@@ -362,13 +348,78 @@ function checkScrollBottom() {
   /** Displays ten more posts from postsStartPosition */
   function displayTenMore() {
     postsStartPosition = postsStartPosition+10;
-    const posts=document.getElementsByClassName('single_post_container');
+    showPosts(10);
+  }
+}
 
-    postPositionReal();
-    const postsEnd = postsStartPosition+10;
-    for (let i = postsStartPosition; i < postsEnd; i++) {
-      posts[i].style.display = 'block';
-      posts[i].style.order = 0;
+/** Shows more posts
+ * @param {number} howMany - How many more posts to display */
+function showPosts(howMany) {
+  postPositionReal();
+
+  const posts=document.getElementsByClassName('single_post_container');
+  const postsEnd = postsStartPosition+howMany;
+  for (let i = postsStartPosition; i < postsEnd; i++) {
+    posts[i].style.display = 'block';
+    posts[i].style.order = 0;
+  }
+
+  /** Checks if we have posts to display at postsStartPosition */
+  function postPositionReal() {
+    const maxPosts =
+      document.getElementsByClassName('single_post_container').length;
+    if (postsStartPosition >= maxPosts) {
+      postsStartPosition = maxPosts - 10;
+    } else if (postsStartPosition < 0) {
+      postsStartPosition = 0;
     }
+    displayPostCount(maxPosts);
+
+    /** Function to update the post count display on page
+     * @param {number} maxPosts - How many posts we found on the page */
+    function displayPostCount(maxPosts) {
+      const currentPostPage = parseInt(((postsStartPosition+10)/10), 10);
+      const postPagesTotal = parseInt((maxPosts/10), 10);
+      document.getElementById('page_number').innerHTML =
+        '<span>Displaying Page '+currentPostPage+
+        ' of '+postPagesTotal+'</span>';
+    }
+  }
+}
+
+/** Checks if we are in a state where navigation should occur
+ * @return {bool} - Returns false when we should not try to navigate */
+function notNavigable() {
+  if (document.activeElement.id == 'search' ||
+    document.getElementById('all_posts_container').style.display == 'none' ||
+    document.getElementById('search').value ||
+    document.getElementById('tags').style.display == 'flex' ||
+    document.getElementById('page_number').style.display == 'none') {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+/** Hides all the navigation, since it is out of context */
+function hideNav() {
+  if (document.activeElement.id != 'search') {
+    document.getElementById('search').style.display = 'none';
+  }
+  document.getElementById('next_page').style.display = 'none';
+  document.getElementById('previous_page').style.display = 'none';
+  document.getElementById('page_number').style.display = 'none';
+}
+
+/** Shows all the navigation elements
+ * @return {bool} - Returns false when we should not display navigation */
+function showNav() {
+  if (notNavigable()) {
+    return false;
+  } else {
+    document.getElementById('search').style.display = 'block';
+    document.getElementById('next_page').style.display = 'initial';
+    document.getElementById('previous_page').style.display = 'initial';
+    document.getElementById('page_number').style.display = 'initial';
   }
 }

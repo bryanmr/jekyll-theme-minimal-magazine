@@ -13,16 +13,11 @@
     <header id="header">
       <h1 id="headline">{{ site.title }} -- {{ site.description }}</h1>
       <nav>
-        <a href="{{ '/' | relative_url }}">Navigate Home</a>
-
-        {%- for nav_target in site.navigation %}
-        <a href="#" onclick='writeFullPost("{{ nav_target.url | relative_url }}");return false'>{{ nav_target.text }}</a>
-        {%- endfor %}
+        <a href="{{ '/' | relative_url }}">🏠 Home</a>
 
         {%- if site.categories %}
-        <!-- Categories -->
         <div class="dropdown">
-          <a tabindex="0" href="javascript:void(0)">Categories</a>
+          <a tabindex="0" href="javascript:void(0)">📔 Categories</a>
           <div class="dropdown_content" role="menu" aria-haspopup="true" aria-expanded="false">
             {%- for category in site.categories %}
             <a href="#" onclick="displayCategory('{{ category | first }}');this.blur();return false">{{ category | first }}</a>
@@ -32,9 +27,8 @@
         {%- endif -%}
 
         {%- if site.tags %}
-        <!-- Tags -->
         <div class="dropdown">
-          <a tabindex="0" href="javascript:void(0)">Tags</a>
+          <a tabindex="0" href="javascript:void(0)">🏷️ Tags</a>
           <div class="dropdown_content" role="menu" aria-haspopup="true" aria-expanded="false">
             {%- for tag in site.tags limit:10 %}
             <a href="#" onclick="displayTag('{{ tag | first }}');this.blur();return false">{{ tag | first }}</a>
@@ -44,6 +38,11 @@
         </div>
         {%- endif %}
 
+        {%- for nav_target in site.navigation %}
+        <a href="#" onclick='writeFullPost("{{ nav_target.url | relative_url }}");return false'>{{ nav_target.text }}</a>
+        {%- endfor %}
+
+
         <div id="nav_spacer"></div>
 
         <!-- lunr.js search -->
@@ -51,6 +50,7 @@
 
         <a href="#" id="close_full_post" onclick="closeFullPost();return false">Close Displayed Content</a>
         <a href="#" id="clear_search_results" onclick="clearSearchResults();return false">Clear Search Results</a>
+        <a href="#" id="close_tags" onclick="closeTagsDisplay();return false">Close Tags Display</a>
       </nav>
     </header>
 
@@ -58,13 +58,14 @@
     <a href="#" id="next_page" title="Next Posts" onclick="nextPage();return false"><nav class="page_turner">&#8250;</nav></a>
 
     {%- if site.tags %}
-    <div id="tags">
-      {%- for tag in site.tags %}
-      <a style="font-size: {{ tag | last | size | times: 3 | plus: 18 }}px" href="#" onclick="displayTag('{{ tag | first }}');this.blur();return false">{{ tag | first }} ({{ tag | last | size }})</a>
-      {%- endfor %}
+    <div id="tag_holder">
+      <div id="tags">
+        {%- for tag in site.tags %}
+        <a style="font-size: {{ tag | last | size | times: 5 | plus: 6 }}px" href="#" onclick="displayTag('{{ tag | first }}');this.blur();return false"> {{ tag | first }} ({{ tag | last | size }}) </a>
+        {%- endfor %}
+      </div>
     </div>
     {%- endif %}
-
 
     <div id="all_posts_container">
       {%- for post in site.posts %}
