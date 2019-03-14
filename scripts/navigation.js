@@ -89,6 +89,7 @@ function displayAllTags() {
   showAllPostsContainer();
   document.getElementById('tags').style.display = 'flex';
   document.getElementById('close_tags').style.display = 'block';
+  hideNav(); // Call again to get a resize
 }
 
 /** Reads the value of HTTP get values
@@ -414,6 +415,7 @@ function notNavigable() {
 
 /** Hides all the navigation, since it is out of context */
 function hideNav() {
+  elementHeightSet('header', 'header_spacer');
   if (document.activeElement.id != 'search') {
     document.getElementById('search').style.display = 'none';
   }
