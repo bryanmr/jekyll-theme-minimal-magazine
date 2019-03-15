@@ -469,6 +469,7 @@ function showNav() {
     document.getElementById('tags_nav').style.display = 'initial';
     document.getElementById('categories_nav').style.display = 'initial';
   }
+  document.getElementById('header').style.display = 'flex';
   elementHeightSet('header', 'header_spacer');
 }
 
