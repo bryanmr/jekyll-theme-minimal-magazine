@@ -128,9 +128,9 @@ function displayTen() {
     window.scrollTo(0, 0);
   }
 
-  showNav();
   hideAllPosts();
   showPosts(10);
+  showNav();
 }
 
 /** Hide all the posts */
