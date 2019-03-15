@@ -11,6 +11,7 @@
 var lunrIndex = false;
 var postsStartPosition = 0;
 var lastScrollPosition = 0;
+var savedNavURL = false;
 /* eslint-enable */
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -49,10 +50,17 @@ async function initializePage() {
   document.getElementById('clear_search_results').style.display = 'none';
 
   const searchTerm = getSetValue('searchTerm');
+  const ourCategory = getSetValue('category');
+  const ourTag = getSetValue('tag');
   if (searchTerm) {
     hideNav();
-    document.getElementById('search').value = getSetValue('searchTerm');
+    document.getElementById('search').value =
+      decodeURI(getSetValue('searchTerm'));
     doSearch({target: {value: searchTerm}}); // This is the expected format
+  } else if (ourCategory) {
+    displayCategory(decodeURI(ourCategory));
+  } else if (ourTag) {
+    displayTag(decodeURI(ourTag));
   } else {
     displayTen();
   }
@@ -172,6 +180,7 @@ function displayCategory(category) {
   const selectedPosts =
     document.querySelectorAll('[data-categories*="'+category+'"]');
   showAllSelectedPosts(selectedPosts);
+  updateURL('category='+category);
 }
 
 /** Display all posts contained on selected object
@@ -194,6 +203,7 @@ function displayTag(tag) {
   const selectedPosts =
     document.querySelectorAll('[data-tags*="'+tag+'"]');
   showAllSelectedPosts(selectedPosts);
+  updateURL('tag='+tag);
 }
 
 /** Searches lunrIndex using lunr.js and displays posts
@@ -246,7 +256,9 @@ async function writeFullPost(url) {
 
     showFullPostsContainer();
 
-    updateURL('content='+url);
+    savedNavURL = window.location.search;
+    window.history.pushState({}, '', '?content='+url);
+
     window.scrollTo(0, 0);
   }
 }
@@ -256,6 +268,9 @@ function closeFullPost() {
   showAllPostsContainer(); // Closes full_post
   showNav();
   popParamFromURL('content');
+  if (savedNavURL) {
+    window.history.pushState({}, '', savedNavURL);
+  }
 }
 
 /** Clears the search results and displays all_posts_container */
@@ -265,11 +280,15 @@ function clearSearchResults() {
   document.getElementById('categories_nav').style.display = 'initial';
   document.getElementById('search').value = '';
   popParamFromURL('searchTerm');
+  savedNavURL = false;
   displayTen();
 }
 
 /** Closes the tag cloud */
 function closeTagsDisplay() {
+  popParamFromURL('tag');
+  popParamFromURL('category');
+  savedNavURL = false;
   document.getElementById('tags').style.display = 'none';
   document.getElementById('close_tags').style.display = 'none';
   displayTen();
