@@ -1,11 +1,37 @@
-.full_post {
+#full_post {
+  width: 80%;
+  margin: auto;
 }
-.full_post_image {
-  float: right;
+.post_frontmatter {
+  display: flex;
+  flex-flow: row-reverse wrap;
+  justify-content: space-around;
 }
-.highlighted {
-  background-color: yellow;
+.post_frontmatter img {
+  height: auto;
+  width: auto;
+  max-width: 40%;
+  max-height: 40%;
+  flex: 0 1 100%;
+  order: 1;
+  object-fit: contain;
 }
-.not_highlighted {
-  background-color: initial;
+.post_preamble {
+  margin-top: auto;
+  margin-bottom: auto;
+  order: 2;
+}
+.post_preamble h1 {
+  font-weight: bold;
+  font-size: 300%;
+}
+@media only screen and (min-width: 768px) {
+  .post_preamble {
+    flex: 1 1 50%;
+  }
+}
+@media only screen and (max-width: 767px) {
+  .post_preamble {
+    flex: 1 1 100%;
+  }
 }

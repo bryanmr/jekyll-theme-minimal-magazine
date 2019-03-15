@@ -1,4 +1,16 @@
 ---
 layout: default
 ---
+<div class="post_frontmatter">
+  <img alt="Post image for flavor, not content" class="full_post_image" src='{{ page.image | relative_url }}'>
+  <div class="post_preamble">
+    <div><b>Author:</b> {{page.author | default: 'None'}}</div>
+    <div><b>Date:</b> {{page.date | date: "%B %d, %Y" | default: 'None'}}</div>
+    <div><b>Categories:</b> {{page.categories | join: ', ' | default: 'None'}}</div>
+    <div><b>Tags:</b> {{page.tags | join: ', ' | default: 'None'}}</div>
+    <h1>{{page.title | default: 'This Post is Too Awesome for a Title'}}</h1>
+  </div>
+</div>
+<article>
 {{ content }}
+</article>

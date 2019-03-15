@@ -2,16 +2,18 @@
   width: 100%;
   display: block;
   height: 100px;
+  margin: 0 0 20px 0;
+  padding: 0;
 }
 #header {
   top: 0;
   width: 100%;
   padding: 0;
-  margin: 0;
   z-index: 1000;
   background-color: black;
   position: fixed;
   overflow: visible;
+  margin: 0 0 20px 0;
 }
 #header a {
   text-decoration: none;
