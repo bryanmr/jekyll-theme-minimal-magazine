@@ -12,6 +12,7 @@ var lunrIndex = false;
 var postsStartPosition = 0;
 var lastScrollPosition = 0;
 var savedNavURL = false;
+var firstPageDisplayed = false;
 /* eslint-enable */
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -122,6 +123,7 @@ function getSetValue(key) {
 
 /** Displays 10 posts from postsStartPosition */
 function displayTen() {
+  firstPageDisplayed = false;
   if (document.getElementById('full_post').style.display != 'block') {
     window.scrollTo(0, 0);
   }
@@ -382,12 +384,15 @@ function checkScrollBottom() {
 
   /** Displays ten more posts from postsStartPosition */
   function displayTenMore() {
+    if (!firstPageDisplayed) {
+      firstPageDisplayed = parseInt(((postsStartPosition+10)/10), 10);
+    }
     postsStartPosition = postsStartPosition+10;
     showPosts(10);
   }
 }
 
-/** Shows more posts
+/** Shows more posts and updates page number display
  * @param {number} howMany - How many more posts to display */
 function showPosts(howMany) {
   postPositionReal();
@@ -415,9 +420,14 @@ function showPosts(howMany) {
     function displayPostCount(maxPosts) {
       const currentPostPage = parseInt(((postsStartPosition+10)/10), 10);
       const postPagesTotal = parseInt((maxPosts/10), 10);
-      document.getElementById('page_number').innerHTML =
-        '<span>Displaying Page '+currentPostPage+
-        ' of '+postPagesTotal+'</span>';
+      if (firstPageDisplayed) {
+        document.getElementById('page_number').innerHTML =
+          'Displaying Pages '+firstPageDisplayed+' to '
+          +currentPostPage+' of '+postPagesTotal;
+      } else {
+        document.getElementById('page_number').innerHTML =
+          'Displaying Page '+currentPostPage+' of '+postPagesTotal;
+      }
     }
   }
 }
