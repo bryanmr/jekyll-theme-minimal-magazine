@@ -13,6 +13,7 @@ var postsStartPosition = 0;
 var lastScrollPosition = 0;
 var savedNavURL = false;
 var firstPageDisplayed = false;
+var originalTitle = document.title;
 /* eslint-enable */
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -256,6 +257,10 @@ async function writeFullPost(url) {
     const pageContents = await fetchURLResponse.text();
     document.getElementById('full_post').innerHTML = pageContents;
 
+    if (document.getElementById('page_title').dataset.title) {
+      document.title = document.getElementById('page_title').dataset.title;
+    }
+
     showFullPostsContainer();
 
     savedNavURL = window.location.search;
@@ -270,6 +275,7 @@ function closeFullPost() {
   showAllPostsContainer(); // Closes full_post
   showNav();
   popParamFromURL('content');
+  document.title = originalTitle;
   if (savedNavURL) {
     window.history.pushState({}, '', savedNavURL);
   }

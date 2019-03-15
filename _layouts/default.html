@@ -1,9 +1,11 @@
 ---
 ---
-<script>if ('{{ site.baseurl }}' != window.location.pathname) {
-  console.log('Location should be: {{ site.baseurl }}');
-  console.log('See location as: '+window.location.pathname);
-  window.location = '{{ site.baseurl }}?content={{ page.url | relative_url }}';
-}
+<script>
+  if ('{{ site.baseurl }}' != window.location.pathname) {
+    console.log('Location should be: {{ site.baseurl }}');
+    console.log('See location as: '+window.location.pathname);
+    window.location = '{{ site.baseurl }}?content={{ page.url | relative_url }}';
+  }
 </script>
+<div data-title="{{ page.title }}" id="page_title"></div>
 {{ content }}
