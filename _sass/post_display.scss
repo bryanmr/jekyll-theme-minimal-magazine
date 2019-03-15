@@ -4,34 +4,26 @@
 }
 .post_frontmatter {
   display: flex;
-  flex-flow: row-reverse wrap;
-  justify-content: space-around;
+  flex-flow: column wrap;
+  height: 400px;
+  width: 100%;
 }
 .post_frontmatter img {
-  height: auto;
-  width: auto;
-  max-width: 40%;
-  max-height: 40%;
-  flex: 0 1 100%;
-  order: 1;
+  max-width: 400px;
+  order: 3;
   object-fit: contain;
 }
-.post_preamble {
-  margin-top: auto;
-  margin-bottom: auto;
-  order: 2;
+.post_frontmatter div {
+  order: 1;
 }
-.post_preamble h1 {
+.post_frontmatter h1 {
   font-weight: bold;
   font-size: 300%;
+  order: 2;
+  margin-top: auto;
+  margin-bottom: auto;
 }
 @media only screen and (min-width: 768px) {
-  .post_preamble {
-    flex: 1 1 50%;
-  }
 }
 @media only screen and (max-width: 767px) {
-  .post_preamble {
-    flex: 1 1 100%;
-  }
 }
