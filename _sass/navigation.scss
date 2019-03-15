@@ -34,6 +34,15 @@
 #header a:hover {
   background-color: SkyBlue;
 }
+#banner {
+  display: flex;
+}
+#banner img {
+  max-height: 40px;
+  object-fit: contain;
+  order: 2;
+  margin-left: auto;
+}
 #close_full_post, #clear_search_results, #search, #close_tags {
   display: none;
 }

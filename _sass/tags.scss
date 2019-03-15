@@ -1,11 +1,19 @@
 #tags {
+  background-color: DarkSlateGray;
   display: none;
-  width: 60%;
   flex-flow: row wrap;
   align-items: center;
   justify-content: space-evenly;
   margin: auto;
+  border-radius: 5%;
 }
 #tags a {
   padding: 5px;
+  color: white;
+  text-decoration: none;
+}
+@media only screen and (min-width: 768px) {
+  #tags {
+    width: 60%;
+  }
 }

@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <link rel="shortcut icon" type="image/svg" href="{{ site.favicon | relative_url }}"/>
     <link rel="stylesheet" href="{{ '/css/site.css' | relative_url }}">
     <script src="{{ '/scripts/lunr.min.js' | relative_url }}"></script>
     <script src="{{ '/scripts/navigation.js' | relative_url }}"></script>
@@ -11,7 +12,10 @@
   <body>
     <div id="header_spacer"></div>
     <header id="header">
-      <h1 id="headline">{{ site.title }} -- {{ site.description }}</h1>
+      <div id="banner">
+        <h1 id="headline">{{ site.title }} -- {{ site.description }}</h1>
+        <img src="{{ site.logo | relative_url }}">
+      </div>
       <nav>
         <a href="{{ '/' | relative_url }}">🏠 Home</a>
 
@@ -20,7 +24,7 @@
           <a tabindex="0" href="javascript:void(0)">📔 Categories</a>
           <div class="dropdown_content" role="menu" aria-haspopup="true" aria-expanded="false">
             {%- for category in site.categories %}
-            <a href="#" onclick="displayCategory('{{ category | first }}');this.blur();return false">{{ category | first }}</a>
+            <a href="{{ '?category=' | relative_url }}{{ category | first }}" onclick="displayCategory('{{ category | first }}');this.blur();return false">{{ category | first }}</a>
             {%- endfor %}
           </div>
         </div>
@@ -31,7 +35,7 @@
           <a tabindex="0" href="javascript:void(0)">🏷️ Tags</a>
           <div class="dropdown_content" role="menu" aria-haspopup="true" aria-expanded="false">
             {%- for tag in site.tags limit:10 %}
-            <a href="#" onclick="displayTag('{{ tag | first }}');this.blur();return false">{{ tag | first }}</a>
+            <a href="{{ '?tag=' | relative_url }}{{ tag | first }}" onclick="displayTag('{{ tag | first }}');this.blur();return false">{{ tag | first }}</a>
             {%- endfor %}
             <a class="dropdown_more" href="#" onclick="displayAllTags();this.blur();return false">Show All Tags</a>
           </div>
@@ -45,7 +49,7 @@
 
         <div id="nav_spacer"></div>
 
-        <a href="{{ 'feed.xml' | relative_url }}" id="rss">📡 RSS</a>
+        <a href="{{ 'feed.xml' | relative_url }}" target="_blank" id="rss">📡 RSS</a>
 
         <!-- lunr.js search -->
         <input onkeydown="if(event.keyCode == 13){event.preventDefault(); return false;}" id="search" type="search" name="lunr_search" placeholder="lunr.js site search">
@@ -63,7 +67,7 @@
     <div id="tag_holder">
       <div id="tags">
         {%- for tag in site.tags %}
-        <a style="font-size: {{ tag | last | size | times: 5 | plus: 6 }}px" href="#" onclick="displayTag('{{ tag | first }}');this.blur();return false"> {{ tag | first }} ({{ tag | last | size }}) </a>
+        <a style="font-size: {{ tag | last | size | times: 5 | plus: 6 }}px" href="{{ '?tag=' | relative_url }}{{ tag | first }}" onclick="displayTag('{{ tag | first }}');this.blur();return false"> {{ tag | first }} ({{ tag | last | size }}) </a>
         {%- endfor %}
       </div>
     </div>
@@ -72,7 +76,7 @@
     <div id="all_posts_container">
       {%- for post in site.posts %}
       <div id="{{ post.permalink | sluggify }}" class="single_post_container" data-title="{{ post.title | xml_escape }}" data-categories="{{post.categories | join: ',' | default: 'None'}}" data-tags="{{post.tags | join: ',' | default: 'None'}}">
-        <a href="#" onclick='writeFullPost("{{ post.permalink | relative_url }}");return false'>
+        <a href="{{ '?content=' | relative_url }}{{ post.permalink | relative_url }}" onclick='writeFullPost("{{ post.permalink | relative_url }}");return false'>
           <div class="bg_post_image" style="background-image: url({{ post.image | relative_url }});"></div>
           <div class="over_text">
             <span><b>Author:</b> {{post.author | default: 'None'}}</span><br>
