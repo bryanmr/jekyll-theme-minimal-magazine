@@ -39,11 +39,13 @@
         {%- endif %}
 
         {%- for nav_target in site.navigation %}
-        <a href="#" onclick='writeFullPost("{{ nav_target.url | relative_url }}");return false'>{{ nav_target.text }}</a>
+        <a href="{{ '/?content=' | relative_url }}{{ nav_target.url | relative_url }}" onclick='writeFullPost("{{ nav_target.url | relative_url }}");return false'>{{ nav_target.text }}</a>
         {%- endfor %}
 
 
         <div id="nav_spacer"></div>
+
+        <a href="{{ 'feed.xml' | relative_url }}" id="rss">📡 RSS</a>
 
         <!-- lunr.js search -->
         <input onkeydown="if(event.keyCode == 13){event.preventDefault(); return false;}" id="search" type="search" name="lunr_search" placeholder="lunr.js site search">
@@ -77,7 +79,7 @@
             <span><b>Date:</b> {{post.date | date: "%B %d, %Y" | default: 'None'}}</span><br>
             <span><b>Categories:</b> {{post.categories | join: ', ' | default: 'None'}}</span><br>
             <span><b>Tags:</b> {{post.tags | join: ', ' | default: 'None'}}</span>
-            <p>{{- post | strip_html | truncatewords: 40 | strip -}} <em> Click for More</em></p>
+            <p>{{- post.excerpt | strip_html | truncatewords: 40 | strip -}} <em> Click for More</em></p>
           </div>
           <h2>{{- post.title -}}</h2>
         </a>
@@ -89,7 +91,7 @@
 
     <div id="footer_spacer"></div>
     <footer id="footer" class="contrast">
-      <div id="copyright">Content Copyright {{ site.name }} in {{ site.time | date: '%Y' }}</div>
+      <div id="copyright">Content Copyright {{ site.author }} in {{ site.time | date: '%Y' }}</div>
       <div id="page_number"></div>
       <div id="advertisement"><a href="https://github.com/bryanmr/jekyll-theme-minimal-magazine">Jekyll Minimal Magazine</a> by <a href="https://bryanreese.net">Bryan Reese</a></div>
     </footer>

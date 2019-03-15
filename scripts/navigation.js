@@ -1,9 +1,12 @@
-/* exported clearSearchResults */
-/* exported closeFullPost */
-/* exported closeTagsDisplay */
 /* exported displayCategory */
 /* exported displayTag */
 /* exported displayAllTags */
+/* exported writeFullPost */
+/* exported closeFullPost */
+/* exported clearSearchResults */
+/* exported closeTagsDisplay */
+/* exported previousPage */
+/* exported nextPage */
 /* eslint-disable */
 var lunrIndex = false;
 var postsStartPosition = 0;
@@ -64,6 +67,9 @@ function hideEverything() {
   document.getElementById('tags').style.display = 'none';
   document.getElementById('full_post').style.display = 'none';
   document.getElementById('all_posts_container').style.display = 'none';
+  document.getElementById('close_full_post').style.display = 'none';
+  document.getElementById('close_tags').style.display = 'none';
+  document.getElementById('clear_search_results').style.display = 'none';
 }
 
 /** Shows the all_posts_container */
@@ -193,8 +199,6 @@ function displayTag(tag) {
 /** Searches lunrIndex using lunr.js and displays posts
  * @param {string} value - The search term */
 function doSearch(value) {
-  document.getElementById('tags_nav').style.display = 'none';
-  document.getElementById('categories_nav').style.display = 'none';
   document.getElementById('clear_search_results').style.display = 'initial';
   document.getElementById('search').style.display = 'block';
   document.getElementById('search').focus();
@@ -415,13 +419,15 @@ function notNavigable() {
 
 /** Hides all the navigation, since it is out of context */
 function hideNav() {
-  elementHeightSet('header', 'header_spacer');
   if (document.activeElement.id != 'search') {
     document.getElementById('search').style.display = 'none';
   }
   document.getElementById('next_page').style.display = 'none';
   document.getElementById('previous_page').style.display = 'none';
   document.getElementById('page_number').style.display = 'none';
+  document.getElementById('tags_nav').style.display = 'none';
+  document.getElementById('categories_nav').style.display = 'none';
+  elementHeightSet('header', 'header_spacer');
 }
 
 /** Shows all the navigation elements */
@@ -431,7 +437,10 @@ function showNav() {
     document.getElementById('next_page').style.display = 'initial';
     document.getElementById('previous_page').style.display = 'initial';
     document.getElementById('page_number').style.display = 'initial';
+    document.getElementById('tags_nav').style.display = 'initial';
+    document.getElementById('categories_nav').style.display = 'initial';
   }
+  elementHeightSet('header', 'header_spacer');
 }
 
 /** Returns true if we have a content tab open

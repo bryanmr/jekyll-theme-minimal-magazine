@@ -13,7 +13,7 @@
   background-color: black;
   position: fixed;
   overflow: visible;
-  margin: 0 0 20px 0;
+  margin: 0;
 }
 #header a {
   text-decoration: none;
@@ -38,7 +38,7 @@
   display: none;
 }
 #close_full_post, #clear_search_results, #close_tags {
-  animation-duration: 3s;
+  animation-duration: 1s;
   animation-name: fadein;
 }
 @keyframes fadein {
@@ -71,6 +71,10 @@
   }
   .page_turner {
     display: none;
+  }
+  #header nav {
+    display: flex;
+    flex-flow: row wrap;
   }
 }
 @media only screen and (min-width: 768px) {
