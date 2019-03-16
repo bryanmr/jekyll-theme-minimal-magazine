@@ -265,7 +265,9 @@ async function writeFullPost(url) {
 
     showFullPostsContainer();
 
-    savedNavURL = window.location.search;
+    if (!getSetValue('content')) {
+      savedNavURL = window.location.search;
+    }
     window.history.pushState({}, '', '?content='+url);
 
     window.scrollTo(0, 0);
