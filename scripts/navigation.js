@@ -163,14 +163,24 @@ function updateURL(newParam) {
 }
 
 /** Removes HTTP get parameter from URL
- * @param {string} goner - The key to be removed (along with its value) */
+ * @param {string} goner - The key to be removed (along with its value)
+ * @return {bool} - Returns false when it did nothing */
 function popParamFromURL(goner) {
+  console.log(window.location.search);
+  if (!window.location.search) {
+    console.log('Popping nothing');
+    return false;
+  }
   const regex = new RegExp('&*'+goner+'=.+?(?=&|$)');
-  const updatedLocationSearch = window.location.search.replace(regex, '');
-  if (updatedLocationSearch == '?') {
-    window.history.pushState({}, '', window.location.pathname);
-  } else {
-    window.history.pushState({}, '', updatedLocationSearch);
+  const matchingLocation = window.location.search.match(regex);
+  if (matchingLocation) {
+    console.log('We are going to pop!');
+    const updatedLocationSearch = window.location.search.replace(regex, '');
+    if (updatedLocationSearch == '?') {
+      window.history.pushState({}, '', window.location.pathname);
+    } else {
+      window.history.pushState({}, '', updatedLocationSearch);
+    }
   }
 }
 
@@ -307,7 +317,7 @@ function closeTagsDisplay() {
 }
 
 /** Checks if the next posts should be displayed, then calls displayTen()
- * @return {false} - If this function returns, it is an error */
+ * @return {bool} - If this function returns, it is an error */
 function nextPage() {
   if (notNavigable()) {
     return false;
