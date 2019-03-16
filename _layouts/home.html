@@ -50,8 +50,6 @@
 
         <div id="nav_spacer"></div>
 
-        <a href="{{ 'feed.xml' | relative_url }}" target="_blank" id="rss">📡 RSS</a>
-
         <!-- lunr.js search -->
         <input onkeydown="if(event.keyCode == 13){event.preventDefault(); return false;}" id="search" type="search" name="lunr_search" placeholder="lunr.js site search">
 
@@ -96,7 +94,7 @@
 
     <div id="footer_spacer"></div>
     <footer id="footer" class="contrast">
-      <div id="copyright">Content Copyright {{ site.author }} in {{ site.time | date: '%Y' }}</div>
+      <div id="copyright">©️ {{ site.author }} - {{ site.time | date: '%Y' }}</div>
       <div id="page_number"></div>
       <div id="advertisement"><a href="https://github.com/bryanmr/jekyll-theme-minimal-magazine">Jekyll Minimal Magazine</a> by <a href="https://bryanreese.net">Bryan Reese</a></div>
     </footer>
