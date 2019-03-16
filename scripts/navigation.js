@@ -13,7 +13,7 @@ var postsStartPosition = 0;
 var lastScrollPosition = 0;
 var savedNavURL = false;
 var firstPageDisplayed = false;
-var originalTitle = document.title;
+var originalTitle = false;
 /* eslint-enable */
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
   window.onpopstate = handleBrowserBack;
   elementHeightSet('footer', 'footer_spacer');
   elementHeightSet('header', 'header_spacer');
+  originalTitle = document.title;
   initializePage();
 });
 
@@ -143,6 +144,7 @@ function hideAllPosts() {
 }
 
 /** Updates the URL with new HTTP get key/value
+ * Checks if the value is a search term, then adds it to the search box
  * @param {number} newParam - The new parameter to add to the URL */
 function updateURL(newParam) {
   const newKeyValue=newParam.split('=');
