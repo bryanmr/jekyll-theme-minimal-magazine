@@ -132,7 +132,6 @@ function displayTen() {
 
   hideAllPosts();
   showPosts(10);
-  showNav();
 }
 
 /** Hide all the posts */
@@ -424,6 +423,8 @@ function showPosts(howMany) {
     posts[i].style.order = 0;
   }
 
+  showNav();
+
   /** Checks if we have posts to display at postsStartPosition */
   function postPositionReal() {
     const maxPosts =
@@ -483,14 +484,30 @@ function hideNav() {
 function showNav() {
   if (noOpenContent()) {
     document.getElementById('search').style.display = 'block';
-    document.getElementById('next_page').style.display = 'initial';
-    document.getElementById('previous_page').style.display = 'initial';
     document.getElementById('page_number').style.display = 'initial';
     document.getElementById('tags_nav').style.display = 'initial';
     document.getElementById('categories_nav').style.display = 'initial';
+    checkPosition();
   }
   document.getElementById('header').style.display = 'flex';
   elementHeightSet('header', 'header_spacer');
+
+  /** We only want the previous/next buttons if they do something */
+  function checkPosition() {
+    const maxPosts =
+      document.getElementsByClassName('single_post_container').length;
+    if (maxPosts > (postsStartPosition+10)) {
+      document.getElementById('next_page').style.display = 'initial';
+    } else {
+      document.getElementById('next_page').style.display = 'none';
+    }
+
+    if (postsStartPosition > 0) {
+      document.getElementById('previous_page').style.display = 'initial';
+    } else {
+      document.getElementById('previous_page').style.display = 'none';
+    }
+  }
 }
 
 /** Returns true if we have a content tab open
