@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <link rel="alternate" type="application/atom+xml" title="Atom Feed for {{ site.title }}" href="{{ 'feed.xml' | relative_url }}">
     <link rel="shortcut icon" type="image/svg" href="{{ site.favicon | relative_url }}"/>
     <link rel="stylesheet" href="{{ '/css/site.css' | relative_url }}">
     <script src="{{ '/scripts/lunr.min.js' | relative_url }}"></script>
@@ -34,10 +35,10 @@
         <div id="tags_nav" class="dropdown">
           <a tabindex="0" href="javascript:void(0)">🏷️ Tags</a>
           <div class="dropdown_content" role="menu" aria-haspopup="true" aria-expanded="false">
+            <a class="dropdown_more" href="#" onclick="displayAllTags();this.blur();return false">Browse All Tags</a>
             {%- for tag in site.tags limit:10 %}
             <a href="{{ '?tag=' | relative_url }}{{ tag | first }}" onclick="displayTag('{{ tag | first }}');this.blur();return false">{{ tag | first }}</a>
             {%- endfor %}
-            <a class="dropdown_more" href="#" onclick="displayAllTags();this.blur();return false">Show All Tags</a>
           </div>
         </div>
         {%- endif %}
