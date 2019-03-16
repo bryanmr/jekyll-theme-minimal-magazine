@@ -273,14 +273,13 @@ async function writeFullPost(url) {
       document.title = document.getElementById('page_title').dataset.title;
     }
 
+    window.scrollTo(0, 0);
     showFullPostsContainer();
 
     if (!getSetValue('content')) {
       savedNavURL = window.location.search;
     }
     window.history.pushState({}, '', '?content='+url);
-
-    window.scrollTo(0, 0);
   }
 }
 
@@ -381,6 +380,7 @@ function checkScroll(event) {
     const Height =
       window.getComputedStyle(document.getElementById('header_spacer')).height;
     document.getElementById('header').style.display = 'flex';
+    elementHeightSet('header', 'header_spacer');
     document.getElementById('previous_page').style.top = Height;
     document.getElementById('next_page').style.top = Height;
   } else {
