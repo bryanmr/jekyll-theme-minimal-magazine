@@ -171,7 +171,6 @@ function popParamFromURL(goner) {
   const regex = new RegExp('&*'+goner+'=.+?(?=&|$)');
   const matchingLocation = window.location.search.match(regex);
   if (matchingLocation) {
-    console.log('We are going to pop!');
     const updatedLocationSearch = window.location.search.replace(regex, '');
     if (updatedLocationSearch == '?') {
       window.history.pushState({}, '', window.location.pathname);
