@@ -86,17 +86,16 @@
   }
 }
 @media only screen and (min-width: 768px) {
-  #previous_page {
-    float: left;
-    top: 0;
-    position: sticky;
+  #previous_page, #next_page {
+    top: 50%;
+    position: fixed;
     text-decoration: none;
   }
+  #previous_page {
+    left: 0;
+  }
   #next_page {
-    float: right;
-    top: 0;
-    position: sticky;
-    text-decoration: none;
+    right: 0;
   }
   #nav_spacer {
     margin-left: auto;
