@@ -1,41 +1,43 @@
-#header_spacer {
-  width: 100%;
-  display: block;
-  height: 100px;
-  margin: 0 0 20px 0;
-  padding: 0;
-}
-#header {
+#banner {
   top: 0;
   width: 100%;
   padding: 0;
   z-index: 1000;
   background-color: black;
-  position: fixed;
   overflow: visible;
   margin: 0;
+  display: flex;
 }
-#header a {
+#header_nav {
+  top: 0;
+  width: 100%;
+  padding: 0;
+  z-index: 1000;
+  background-color: black;
+  position: sticky;
+  overflow: visible;
+  margin: 0 0 15px 0;
+  display: flex;
+  flex-flow: row wrap;
+}
+#header_nav a {
   text-decoration: none;
   color: white;
   padding: 5px 20px;
 }
-#header input {
+#header_nav input {
   padding: 0;
   margin: 0 20px 0;
   font: inherit;
 }
-#header h1 {
+#banner h1 {
   padding: 0;
   margin: 0 20px 0;
   clear: both;
   color: white;
 }
-#header a:hover {
+#header_nav a:hover {
   background-color: SkyBlue;
-}
-#banner {
-  display: flex;
 }
 #banner img {
   max-height: 40px;
@@ -62,9 +64,7 @@
   }
 }
 @media only screen and (max-width: 767px) {
-  #header {
-    display: flex;
-    flex-direction: row;
+  #header_nav {
     justify-content: space-evenly;
     align-items: center;
   }
@@ -72,8 +72,11 @@
     max-width: 90%;
     text-align: center;
   }
-  #header h1 {
-    display: none;
+  #banner {
+    flex-flow: row nowrap;
+  }
+  #banner h1 {
+    font-size: 100%;
   }
   #previous_page, #next_page {
     display: none;
@@ -81,19 +84,8 @@
   .page_turner {
     display: none;
   }
-  #header nav {
-    display: flex;
-    flex-flow: row wrap;
-  }
 }
 @media only screen and (min-width: 768px) {
-  #header {
-    flex-direction: column;
-  }
-  #header nav {
-    width: 100%;
-    display: flex;
-  }
   #previous_page {
     float: left;
     top: 0;

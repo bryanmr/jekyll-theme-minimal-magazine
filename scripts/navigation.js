@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', function() {
   document.onkeydown = checkKey;
   window.onpopstate = handleBrowserBack;
   elementHeightSet('footer', 'footer_spacer');
-  elementHeightSet('header', 'header_spacer');
   originalTitle = document.title;
   initializePage();
 });
@@ -369,20 +368,11 @@ function checkKey(event) {
   }
 }
 
-/** Checks which direction we are scrolling and hides or shows header
+/** Checks which direction we are scrolling
  * @param {object} event - The event passed from the event listener */
 function checkScroll(event) {
   if (lastScrollPosition > window.pageYOffset) {
-    const Height =
-      window.getComputedStyle(document.getElementById('header_spacer')).height;
-    document.getElementById('header').style.display = 'flex';
-    elementHeightSet('header', 'header_spacer');
-    document.getElementById('previous_page').style.top = Height;
-    document.getElementById('next_page').style.top = Height;
   } else {
-    document.getElementById('header').style.display = 'none';
-    document.getElementById('previous_page').style.top = 0;
-    document.getElementById('next_page').style.top = 0;
     checkScrollBottom();
   }
   lastScrollPosition = window.pageYOffset;
@@ -474,7 +464,6 @@ function hideNav() {
   document.getElementById('page_number').style.display = 'none';
   document.getElementById('tags_nav').style.display = 'none';
   document.getElementById('categories_nav').style.display = 'none';
-  elementHeightSet('header', 'header_spacer');
 }
 
 /** Shows all the navigation elements */
@@ -486,8 +475,6 @@ function showNav() {
     document.getElementById('categories_nav').style.display = 'initial';
     checkPosition();
   }
-  document.getElementById('header').style.display = 'flex';
-  elementHeightSet('header', 'header_spacer');
 
   /** We only want the previous/next buttons if they do something */
   function checkPosition() {
