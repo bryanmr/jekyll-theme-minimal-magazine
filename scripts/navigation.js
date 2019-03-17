@@ -7,14 +7,13 @@
 /* exported closeTagsDisplay */
 /* exported previousPage */
 /* exported nextPage */
-/* eslint-disable */
-var lunrIndex = false;
-var postsStartPosition = 0;
-var lastScrollPosition = 0;
-var savedNavURL = false;
-var firstPageDisplayed = false;
-var originalTitle = false;
-/* eslint-enable */
+'use strict';
+let lunrIndex = false;
+let postsStartPosition = 0;
+let lastScrollPosition = 0;
+let savedNavURL = false;
+let firstPageDisplayed = false;
+let originalTitle = false;
 
 document.addEventListener('DOMContentLoaded', function() {
   window.addEventListener('scroll', checkScroll, true);
@@ -155,6 +154,7 @@ function updateURL(newParam) {
   } else {
     if (window.location.search) {
       window.history.pushState({}, '', window.location.search+'&'+newParam);
+      console.log('We handle this, but we should not get here.');
     } else {
       window.history.pushState({}, '', '?'+newParam);
     }
@@ -165,9 +165,7 @@ function updateURL(newParam) {
  * @param {string} goner - The key to be removed (along with its value)
  * @return {bool} - Returns false when it did nothing */
 function popParamFromURL(goner) {
-  console.log(window.location.search);
   if (!window.location.search) {
-    console.log('Popping nothing');
     return false;
   }
   const regex = new RegExp('&*'+goner+'=.+?(?=&|$)');
