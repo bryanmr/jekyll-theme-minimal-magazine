@@ -400,10 +400,33 @@ function checkKey(event) {
  * @param {object} event - The event passed from the event listener */
 function checkScroll(event) {
   if (lastScrollPosition > window.pageYOffset) {
+    // We don't do anything for scroll up, but leaving this here
   } else {
     checkScrollBottom();
   }
   lastScrollPosition = window.pageYOffset;
+
+  const TOCElement = document.getElementById('TOC');
+  if (TOCElement && TOCElement.style.display != 'none') {
+    const postHeaders =
+      document.getElementById('full_post').querySelectorAll('h1, h2, h3');
+    if (postHeaders[1].getBoundingClientRect().y > 1) {
+      TOCElement.querySelectorAll('div')[1].style.border = '2px solid black';
+      TOCElement.querySelectorAll('div')[2].style.border = 'none';
+    } else {
+      for (let headNumber = 2; headNumber < postHeaders.length; headNumber++) {
+        if (postHeaders[headNumber].getBoundingClientRect().y > 1) {
+          TOCElement.querySelectorAll('div')[headNumber].style.border =
+            '2px solid black';
+          TOCElement.querySelectorAll('div')[headNumber-1].style.border =
+            'none';
+          TOCElement.querySelectorAll('div')[headNumber+1].style.border =
+            'none';
+          break;
+        }
+      }
+    }
+  }
 }
 
 /** Checks if we are at the bottom of the page, then loads more content
