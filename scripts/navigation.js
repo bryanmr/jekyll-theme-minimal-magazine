@@ -263,8 +263,8 @@ function displayTOC() {
     document.getElementById('full_post').querySelectorAll('h1, h2, h3');
 
   let TOCContents = '<div id="toc_label">Table of Contents</div>';
-  TOCContents += '<div id="toc_head"><a href="#" '+
-    'onclick="window.scrollTo(0, 0);return false">Top of Page</a></div>';
+  TOCContents += `<div id="toc_head"><a href="#" onclick="window.scrollTo(
+  { top: 0, behavior: 'smooth' });return false">Top of Page</a></div>`;
 
   for (let headNumber = 1; headNumber < postHeaders.length; headNumber++) {
     TOCContents +=
@@ -413,6 +413,12 @@ function checkScroll(event) {
     if (postHeaders[1].getBoundingClientRect().y > 1) {
       TOCElement.querySelectorAll('div')[1].style.border = '2px solid black';
       TOCElement.querySelectorAll('div')[2].style.border = 'none';
+    } else if ((window.innerHeight + window.pageYOffset) >=
+      document.body.scrollHeight-10) {
+      TOCElement.querySelectorAll('div')[postHeaders.length].style.border =
+        '2px solid black';
+      TOCElement.querySelectorAll('div')[postHeaders.length-1].style.border =
+        'none';
     } else {
       for (let headNumber = 2; headNumber < postHeaders.length; headNumber++) {
         if (postHeaders[headNumber].getBoundingClientRect().y > 1) {
