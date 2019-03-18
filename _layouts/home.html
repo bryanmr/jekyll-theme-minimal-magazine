@@ -71,7 +71,7 @@
 
     <div id="all_posts_container">
       {%- for post in site.posts %}
-      <div id="{{ post.permalink | sluggify }}" class="single_post_container" data-categories="{{post.categories | join: ',' | default: 'None'}}" data-tags="{{post.tags | join: ',' | default: 'None'}}">
+      <div id="{{ post.permalink | sluggify }}" class="single_post_container" data-categories="{{ post.categories | join: ',' | default: 'None' }}" data-tags="{{ post.tags | join: ',' | default: 'None' }}">
         <a href="{{ '?content=' | relative_url }}{{ post.permalink | relative_url }}" onclick='writeFullPost("{{ post.permalink | relative_url }}");return false'>
           <div class="bg_post_image" style="background-image: url({{ post.image | relative_url }});"></div>
           <div class="over_text">
