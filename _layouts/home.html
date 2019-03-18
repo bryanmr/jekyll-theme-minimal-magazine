@@ -75,10 +75,10 @@
         <a href="{{ '?content=' | relative_url }}{{ post.permalink | relative_url }}" onclick='writeFullPost("{{ post.permalink | relative_url }}");return false'>
           <div class="bg_post_image" style="background-image: url({{ post.image | relative_url }});"></div>
           <div class="over_text">
-            <span><b>Author:</b> {{post.author | default: 'None'}}</span><br>
-            <span><b>Date:</b> {{post.date | date: "%B %d, %Y" | default: 'None'}}</span><br>
-            <span><b>Categories:</b> {{post.categories | join: ', ' | default: 'None'}}</span><br>
-            <span><b>Tags:</b> {{post.tags | join: ', ' | default: 'None'}}</span>
+            <span><b>Author:</b> {{ post.author | default: 'None' }}</span><br>
+            <span><b>Date:</b> {{ post.date | date: "%B %d, %Y" | default: 'None' }}</span><br>
+            <span><b>Categories:</b> {{ post.categories | join: ', ' | default: 'None' }}</span><br>
+            <span><b>Tags:</b> {{ post.tags | join: ', ' | default: 'None' }}</span>
             <p>{{- post.excerpt | strip_html | truncatewords: 40 | strip -}} <em> Click for More</em></p>
           </div>
           <h2>{{- post.title -}}</h2>
