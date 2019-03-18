@@ -17,10 +17,10 @@ let firstPageDisplayed = false;
 let originalTitle = false;
 
 document.addEventListener('DOMContentLoaded', function() {
-  window.addEventListener('scroll', checkScroll, true);
+  document.addEventListener('scroll', checkScroll, true);
   document.addEventListener('wheel', checkScrollBottom, true);
-  document.onkeydown = checkKey;
-  window.onpopstate = handleBrowserBack;
+  document.addEventListener('keydown', checkKey, true);
+  window.addEventListener('popstate', handleBrowserBack, true);
   elementHeightSet('footer', 'footer_spacer');
   originalTitle = document.title;
   initializePage();
@@ -264,8 +264,7 @@ function displayTOC() {
 
   let TOCContents = '<div id="toc_label">Table of Contents</div>';
   TOCContents += '<div id="toc_head"><a href="#" '+
-    'onclick="window.scrollTo(0, 0);return false">'+
-    postHeaders[0].innerHTML+'</a></div>';
+    'onclick="window.scrollTo(0, 0);return false">Top of Page</a></div>';
 
   for (let headNumber = 1; headNumber < postHeaders.length; headNumber++) {
     TOCContents +=
