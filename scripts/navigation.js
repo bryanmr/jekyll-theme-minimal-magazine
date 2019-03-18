@@ -7,6 +7,7 @@
 /* exported closeTagsDisplay */
 /* exported previousPage */
 /* exported nextPage */
+/* exported scrollTOC */
 'use strict';
 let lunrIndex = false;
 let postsStartPosition = 0;
@@ -256,6 +257,33 @@ async function initializeSearch(url) {
   document.getElementById('search').style.display = 'block';
 }
 
+/** Replace the TOC div with the contents we expect */
+function displayTOC() {
+  const postHeaders =
+    document.getElementById('full_post').querySelectorAll('h1, h2, h3');
+
+  let TOCContents = '<div id="toc_label">Table of Contents</div>';
+  TOCContents += '<div id="toc_head"><a href="#" '+
+    'onclick="window.scrollTo(0, 0);return false">'+
+    postHeaders[0].innerHTML+'</a></div>';
+
+  for (let headNumber = 1; headNumber < postHeaders.length; headNumber++) {
+    TOCContents +=
+      `<div class="toc_'${postHeaders[headNumber].nodeName}">
+      <a href="#" onclick="scrollTOC('${postHeaders[headNumber].id}');
+      return false">
+      ${postHeaders[headNumber].innerHTML}</a></div>`;
+  }
+  document.getElementById('TOC').innerHTML = TOCContents;
+}
+
+/** Scrolls based on TOC links
+ * @param {string} Id - The ID we are scrolling to */
+function scrollTOC(Id) {
+  const elem = document.getElementById(Id);
+  elem.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'nearest'});
+}
+
 /** Writes out a post to the full_post element
  * @param {string} url - URL for the page to be displayed */
 async function writeFullPost(url) {
@@ -270,6 +298,7 @@ async function writeFullPost(url) {
 
     window.scrollTo(0, 0);
     showFullPostsContainer();
+    displayTOC();
 
     if (!getSetValue('content')) {
       savedNavURL = window.location.search;

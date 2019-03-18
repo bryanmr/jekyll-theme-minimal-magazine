@@ -33,19 +33,46 @@
     font-weight: bold;
     font-size: 300%;
   }
-  #tags_for_post {
-    float: right;
+  #TOC, #tags_for_post {
     position: sticky;
-    max-width: 25%;
+    max-width: 20%;
     top: 40px;
     margin-top: 30px;
+  }
+  #TOC {
+    float: left;
+    background-color: SlateGray;
+  }
+  #toc_label {
+    background-color: DarkSlateGray;
+  }
+  #TOC div {
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+  #TOC a {
+    display: inline-block;
+    text-decoration: none;
+    color: white;
+    width: 100%;
+    height: 100%;
+  }
+  #tags_for_post {
+    float: right;
     text-align: right;
   }
   #tags_for_post b {
     display: block;
   }
+  #tags_for_post img {
+    width: 100%;
+  }
   #full_post article {
     width: 50%;
+  }
+  #full_post article h1, #full_post article h2, #full_post article h3 {
+    margin-top: -40px;
+    padding-top: 40px;
   }
 }
 @media only screen and (max-width: 767px) {

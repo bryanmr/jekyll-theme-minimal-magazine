@@ -8,6 +8,7 @@ layout: default
   <div id="post_date">On {{ page.date | date: "%B %d, %Y" }}</div>
   {%- endif %}
 </div>
+<div id="TOC"></div>
 <div id="tags_for_post">
   <img alt="Post image for flavor, not content" class="full_post_image" src='{{ page.image | relative_url }}'>
   <div><b>Categories:</b> {{page.categories | join: ', ' | default: 'None'}}</div>
