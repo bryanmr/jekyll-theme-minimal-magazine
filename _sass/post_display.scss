@@ -57,6 +57,15 @@
     width: 100%;
     height: 100%;
   }
+  .toc_H1 a {
+    padding-left: 10px;
+  }
+  .toc_H2 a {
+    padding-left: 20px;
+  }
+  .toc_H3 a {
+    padding-left: 30px;
+  }
   #tags_for_post {
     float: right;
     text-align: right;

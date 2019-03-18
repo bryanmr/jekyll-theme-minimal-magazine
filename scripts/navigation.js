@@ -268,7 +268,7 @@ function displayTOC() {
 
   for (let headNumber = 1; headNumber < postHeaders.length; headNumber++) {
     TOCContents +=
-      `<div class="toc_'${postHeaders[headNumber].nodeName}">
+      `<div class="toc_${postHeaders[headNumber].nodeName}">
       <a href="#" onclick="scrollTOC('${postHeaders[headNumber].id}');
       return false">
       ${postHeaders[headNumber].innerHTML}</a></div>`;
@@ -396,7 +396,7 @@ function checkKey(event) {
   }
 }
 
-/** Checks which direction we are scrolling
+/** Checks which direction we are scrolling and updates the TOC
  * @param {object} event - The event passed from the event listener */
 function checkScroll(event) {
   if (lastScrollPosition > window.pageYOffset) {
@@ -411,29 +411,38 @@ function checkScroll(event) {
     const postHeaders =
       document.getElementById('full_post').querySelectorAll('h1, h2, h3');
     if (postHeaders[1].getBoundingClientRect().y > 1) {
-      TOCElement.querySelectorAll('div')[1].style.border = '2px solid black';
-      TOCElement.querySelectorAll('div')[2].style.border = 'none';
+      TOCElement.querySelectorAll('div')[1].style.border = '5px solid gray';
+      removeBorders(TOCElement.querySelectorAll('div'), 1);
     } else if ((window.innerHeight + window.pageYOffset) >=
       document.body.scrollHeight-10) {
       TOCElement.querySelectorAll('div')[postHeaders.length].style.border =
-        '2px solid black';
-      TOCElement.querySelectorAll('div')[postHeaders.length-1].style.border =
-        'none';
+        '5px solid gray';
+      removeBorders(TOCElement.querySelectorAll('div'), postHeaders.length);
     } else {
       for (let headNumber = 2; headNumber < postHeaders.length; headNumber++) {
         if (postHeaders[headNumber].getBoundingClientRect().y > 1) {
           TOCElement.querySelectorAll('div')[headNumber].style.border =
-            '2px solid black';
-          TOCElement.querySelectorAll('div')[headNumber-1].style.border =
-            'none';
-          TOCElement.querySelectorAll('div')[headNumber+1].style.border =
-            'none';
+            '5px solid gray';
+          removeBorders(TOCElement.querySelectorAll('div'), headNumber);
           break;
         }
       }
     }
   }
+
+  /** Function to remove borders from a NodeList of elements
+   * @param {NodeList} element - The element to iterate over
+   * @param {number} skipSubElementNum - Skipping this element */
+  function removeBorders(element, skipSubElementNum) {
+    for (let elemNum = 0; elemNum < element.length; elemNum++) {
+      if (elemNum == skipSubElementNum) {
+        continue;
+      }
+      element[elemNum].style.border = 'none';
+    }
+  }
 }
+
 
 /** Checks if we are at the bottom of the page, then loads more content
  * @return {bool} - If this function returns, it is an error */
