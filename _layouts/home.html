@@ -17,7 +17,6 @@
     <style>
     {{ styles | scssify }}
     </style>
-    <!-- <link rel="stylesheet" href="{{ '/css/site.css' | relative_url }}"> -->
     {% seo %}
   </head>
   <body>
@@ -106,6 +105,11 @@
       <div id="advertisement"><a href="https://github.com/bryanmr/jekyll-theme-minimal-magazine">Jekyll Minimal Magazine</a> by <a href="https://bryanreese.net">Bryan Reese</a></div>
     </footer>
   </body>
-  <script defer src="{{ '/scripts/lunr.min.js' | relative_url }}"></script>
-  <script defer src="{{ '/scripts/navigation.js' | relative_url }}"></script>
+
+  <script>
+    {% include scripts/lunr.min.js %}
+  </script>
+  <script>
+    {% include scripts/site.js %}
+  </script>
 </html>

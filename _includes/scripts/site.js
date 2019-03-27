@@ -42,7 +42,7 @@ function elementHeightSet(source, target) {
 }
 
 /** Gets the page ready to be displayed */
-async function initializePage() {
+function initializePage() {
   document.getElementById('close_full_post').style.display = 'none';
   document.getElementById('close_tags').style.display = 'none';
   document.getElementById('clear_search_results').style.display = 'none';
