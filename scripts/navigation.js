@@ -43,13 +43,12 @@ function elementHeightSet(source, target) {
 
 /** Gets the page ready to be displayed */
 async function initializePage() {
-  if (!lunrIndex) {
-    await initializeSearch('/vg/lunr_serialized.json');
-  }
-
   document.getElementById('close_full_post').style.display = 'none';
   document.getElementById('close_tags').style.display = 'none';
   document.getElementById('clear_search_results').style.display = 'none';
+
+  document.getElementById('search').addEventListener('input', doSearch);
+  document.getElementById('search').style.display = 'block';
 
   const searchTerm = getSetValue('searchTerm');
   const ourCategory = getSetValue('category');
@@ -219,7 +218,11 @@ function displayTag(tag) {
 
 /** Searches lunrIndex using lunr.js and displays posts
  * @param {string} value - The search term */
-function doSearch(value) {
+async function doSearch(value) {
+  if (!lunrIndex) {
+    await initializeSearch('lunr_serialized.json');
+  }
+
   document.getElementById('clear_search_results').style.display = 'initial';
   document.getElementById('search').style.display = 'block';
   document.getElementById('search').focus();
@@ -253,8 +256,6 @@ async function initializeSearch(url) {
   const fetchURLResponse = await fetch(url);
   const serializedJSON = await fetchURLResponse.json();
   lunrIndex = lunr.Index.load(serializedJSON);
-  document.getElementById('search').addEventListener('input', doSearch);
-  document.getElementById('search').style.display = 'block';
 }
 
 /** Replace the TOC div with the contents we expect */
