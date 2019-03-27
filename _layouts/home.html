@@ -5,9 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <link rel="alternate" type="application/atom+xml" title="Atom Feed for {{ site.title }}" href="{{ 'feed.xml' | relative_url }}">
     <link rel="shortcut icon" type="image/icon" href="{{ site.favicon | relative_url }}"/>
-    <link rel="stylesheet" href="{{ '/css/site.css' | relative_url }}">
-    <script src="{{ '/scripts/lunr.min.js' | relative_url }}"></script>
-    <script src="{{ '/scripts/navigation.js' | relative_url }}"></script>
+    {% capture styles %}
+    {% include scss/dropdown_menu.scss %}
+    {% include scss/main.scss %}
+    {% include scss/navigation.scss %}
+    {% include scss/post_display.scss %}
+    {% include scss/post_preview.scss %}
+    {% include scss/footer.scss %}
+    {% include scss/tags.scss %}
+    {% endcapture %}
+    <style>
+    {{ styles | scssify }}
+    </style>
+    <!-- <link rel="stylesheet" href="{{ '/css/site.css' | relative_url }}"> -->
     {% seo %}
   </head>
   <body>
@@ -49,7 +59,7 @@
       <div id="nav_spacer"></div>
 
       <!-- lunr.js search -->
-      <input onkeydown="if(event.keyCode == 13){event.preventDefault(); return false;}" id="search" type="search" name="lunr_search" placeholder="lunr.js site search">
+      <input onkeydown="if(event.keyCode == 13){event.preventDefault(); return false;}" id="search" type="search" name="lunr_search" aria-label="Site Search" placeholder="lunr.js site search">
 
       <a href="#" id="close_full_post" onclick="closeFullPost();return false">❌ Close Displayed Content</a>
       <a href="#" id="clear_search_results" onclick="clearSearchResults();return false">❌ Clear Search Results</a>
@@ -75,10 +85,10 @@
         <a href="{{ '?content=' | relative_url }}{{ post.permalink | relative_url }}" onclick='writeFullPost("{{ post.permalink | relative_url }}");return false'>
           <div class="bg_post_image" style="background-image: url({{ post.image | relative_url }});"></div>
           <div class="over_text">
-            <span><b>Author:</b> {{ post.author | default: 'None' }}</span><br>
-            <span><b>Date:</b> {{ post.date | date: "%B %d, %Y" | default: 'None' }}</span><br>
-            <span><b>Categories:</b> {{ post.categories | join: ', ' | default: 'None' }}</span><br>
-            <span><b>Tags:</b> {{ post.tags | join: ', ' | default: 'None' }}</span>
+            <b>Author:</b> {{ post.author | default: 'None' }}<br>
+            <b>Date:</b> {{ post.date | date: "%B %d, %Y" | default: 'None' }}<br>
+            <b>Categories:</b> {{ post.categories | join: ', ' | default: 'None' }}<br>
+            <b>Tags:</b> {{ post.tags | join: ', ' | default: 'None' }}
             <p>{{- post.excerpt | strip_html | truncatewords: 40 | strip -}} <em> Click for More</em></p>
           </div>
           <h2>{{- post.title -}}</h2>
@@ -96,4 +106,6 @@
       <div id="advertisement"><a href="https://github.com/bryanmr/jekyll-theme-minimal-magazine">Jekyll Minimal Magazine</a> by <a href="https://bryanreese.net">Bryan Reese</a></div>
     </footer>
   </body>
+  <script defer src="{{ '/scripts/lunr.min.js' | relative_url }}"></script>
+  <script defer src="{{ '/scripts/navigation.js' | relative_url }}"></script>
 </html>

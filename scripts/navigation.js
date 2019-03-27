@@ -17,8 +17,8 @@ let firstPageDisplayed = false;
 let originalTitle = false;
 
 document.addEventListener('DOMContentLoaded', function() {
-  document.addEventListener('scroll', checkScroll, true);
-  document.addEventListener('wheel', checkScrollBottom, true);
+  document.addEventListener('scroll', checkScroll, {passive: true});
+  document.addEventListener('wheel', checkScrollBottom, {passive: true});
   document.addEventListener('keydown', checkKey, true);
   window.addEventListener('popstate', handleBrowserBack, true);
   elementHeightSet('footer', 'footer_spacer');
