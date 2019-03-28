@@ -9,10 +9,10 @@
 .single_post_container {
   display: none;
   position: relative;
-  animation-duration: 2s;
-  animation-name: popin;
   margin-left: 10px;
   margin-right: 10px;
+  animation-duration: 2s;
+  animation-name: popin;
 }
 @keyframes popin {
   from {

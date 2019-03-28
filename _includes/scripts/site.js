@@ -8,6 +8,7 @@
 /* exported previousPage */
 /* exported nextPage */
 /* exported scrollTOC */
+/* exported toggleSiteMenu */
 'use strict';
 let lunrIndex = false;
 let postsStartPosition = 0;
@@ -275,6 +276,15 @@ function displayTOC() {
       ${postHeaders[headNumber].innerHTML}</a></div>`;
   }
   document.getElementById('TOC').innerHTML = TOCContents;
+}
+
+/** For mobile, displays or collapses menu */
+function toggleSiteMenu() {
+  if (document.getElementById('site_menu').style.display == 'flex') {
+    document.getElementById('site_menu').style.display = 'none';
+  } else {
+    document.getElementById('site_menu').style.display = 'flex';
+  }
 }
 
 /** Scrolls based on TOC links

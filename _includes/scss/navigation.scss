@@ -18,7 +18,12 @@
   overflow: visible;
   margin: 0 0 15px 0;
   display: flex;
-  flex-flow: row wrap;
+  align-items: center;
+}
+#site_menu {
+  display: flex;
+  overflow: visible;
+  flex: auto;
 }
 #header_nav a {
   text-decoration: none;
@@ -44,6 +49,7 @@
   object-fit: contain;
   order: 2;
   margin-left: auto;
+  padding: 0px 20px;
 }
 #close_full_post, #clear_search_results, #search, #close_tags {
   display: none;
@@ -84,6 +90,25 @@
   .page_turner {
     display: none;
   }
+  #menu_bars {
+    fill: white;
+  }
+  #home_menu {
+    width: 100%;
+    display: flex;
+  }
+  #menu_bars {
+    margin-left: auto;
+    padding: 5px 20px;
+  }
+  #site_menu {
+    flex-flow: column wrap;
+    margin-right: auto;
+    display: none;
+  }
+  #header_nav {
+    flex-flow: column wrap;
+  }
 }
 @media only screen and (min-width: 768px) {
   #previous_page, #next_page {
@@ -109,5 +134,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+  #header_nav svg {
+    display: none;
+  }
+  #header_nav {
+    flex-flow: row nowrap;
   }
 }

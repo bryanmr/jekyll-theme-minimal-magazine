@@ -36,6 +36,10 @@ TODO: Write usage instructions here. Describe your available layouts, includes, 
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/bryanmr/jekyll-theme-minimal-magazine. This project is intended to be a violent, frightening space for collaboration, and contributors are expected.
 
+## Credits
+
+This theme uses [lunr.js](https://lunrjs.com/) and [Material Icons from Google](https://material.io/tools/icons/?style=baseline).
+
 ## Development
 
 To set up your environment to develop this theme, run `bundle install`.

@@ -25,40 +25,49 @@
       <img alt="Site Logo" src="{{ site.logo | relative_url }}">
     </header>
     <nav id="header_nav">
-      <a href="{{ '/' | relative_url }}">🏠 Home</a>
+      <div id="home_menu">
+        <a href="{{ '/' | relative_url }}">🏠 Home</a>
+        <a id="menu_bars" href="#" onclick="toggleSiteMenu();return false">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none" />
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" id="menu_bars" />
+          </svg>
+        </a>
+      </div>
 
-      {%- if site.categories %}
-      <div id="categories_nav" class="dropdown">
-        <a tabindex="0" href="javascript:void(0)">📔 Categories</a>
-        <div class="dropdown_content" role="menu" aria-haspopup="true" aria-expanded="false">
+      <div id="site_menu">
+        {%- if site.categories %}
+        <div id="categories_nav" class="dropdown">
+          <a tabindex="0" href="javascript:void(0)">📔 Categories</a>
+          <div class="dropdown_content" role="menu" aria-haspopup="true" aria-expanded="false">
           {%- for category in site.categories %}
           <a href="{{ '?category=' | relative_url }}{{ category | first }}" onclick="displayCategory('{{ category | first }}');this.blur();return false">{{ category | first }}</a>
           {%- endfor %}
+          </div>
         </div>
-      </div>
-      {%- endif -%}
+        {%- endif -%}
 
-      {%- if site.tags %}
-      <div id="tags_nav" class="dropdown">
-        <a tabindex="0" href="javascript:void(0)">🏷️ Tags</a>
-        <div class="dropdown_content" role="menu" aria-haspopup="true" aria-expanded="false">
-          <a class="dropdown_more" href="#" onclick="displayAllTags();this.blur();return false">Browse All Tags</a>
-          {%- for tag in site.tags limit:10 %}
-          <a href="{{ '?tag=' | relative_url }}{{ tag | first }}" onclick="displayTag('{{ tag | first }}');this.blur();return false">{{ tag | first }}</a>
-          {%- endfor %}
+        {%- if site.tags %}
+        <div id="tags_nav" class="dropdown">
+          <a tabindex="0" href="javascript:void(0)">🏷️ Tags</a>
+          <div class="dropdown_content" role="menu" aria-haspopup="true" aria-expanded="false">
+            <a class="dropdown_more" href="#" onclick="displayAllTags();this.blur();return false">Browse All Tags</a>
+            {%- for tag in site.tags limit:10 %}
+            <a href="{{ '?tag=' | relative_url }}{{ tag | first }}" onclick="displayTag('{{ tag | first }}');this.blur();return false">{{ tag | first }}</a>
+            {%- endfor %}
+          </div>
         </div>
+        {%- endif %}
+
+        {%- for nav_target in site.navigation %}
+        <a href="{{ '/?content=' | relative_url }}{{ nav_target.url | relative_url }}" onclick='writeFullPost("{{ nav_target.url | relative_url }}");return false'>{{ nav_target.text }}</a>
+        {%- endfor %}
+
+        <div id="nav_spacer"></div>
+
+        <!-- lunr.js search -->
+        <input onkeydown="if(event.keyCode == 13){event.preventDefault(); return false;}" id="search" type="search" name="lunr_search" aria-label="Site Search" placeholder="lunr.js site search">
       </div>
-      {%- endif %}
-
-      {%- for nav_target in site.navigation %}
-      <a href="{{ '/?content=' | relative_url }}{{ nav_target.url | relative_url }}" onclick='writeFullPost("{{ nav_target.url | relative_url }}");return false'>{{ nav_target.text }}</a>
-      {%- endfor %}
-
-
-      <div id="nav_spacer"></div>
-
-      <!-- lunr.js search -->
-      <input onkeydown="if(event.keyCode == 13){event.preventDefault(); return false;}" id="search" type="search" name="lunr_search" aria-label="Site Search" placeholder="lunr.js site search">
 
       <a href="#" id="close_full_post" onclick="closeFullPost();return false">❌ Close Displayed Content</a>
       <a href="#" id="clear_search_results" onclick="clearSearchResults();return false">❌ Clear Search Results</a>
