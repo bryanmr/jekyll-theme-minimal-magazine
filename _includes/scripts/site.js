@@ -316,8 +316,32 @@ async function writeFullPost(url) {
     }
     window.history.pushState({}, '', '?content='+url);
 
-    // writeComments('https://www.reddit.com/r/gifs/comments/b6i4rt/reindeer_under_the_aurora_borealis.json');
+    findComments(window.location.href);
   }
+}
+
+/** Finds the Reddit threads for a blog post
+ * @param {string} url - URL for the blog post we are searching for */
+function findComments(url) {
+  // URL for testing if the code works
+  // url = 'https://i.imgur.com/4V6UFix.gifv';
+  fetch('https://www.reddit.com/search.json?q=url%3A'+url).then(function(response) {
+    if (response.ok) {
+      return response.json();
+    } else {
+      throw new Error('Failed to download with unknown cause');
+    }
+  }).then(function(redditPosts) {
+    if (redditPosts.data.children[0]) {
+      redditPosts.data.children.forEach(function(thread) {
+        writeComments('https://www.reddit.com'+
+          thread.data.permalink.slice(0, -1)+'.json');
+      });
+    } else {
+      console.log('No comment threads found on Reddit');
+    }
+  }).catch((error) =>
+    console.error('Problem downloading comments. Message: '+error));
 }
 
 /** Displays the comments for a post
@@ -325,16 +349,28 @@ async function writeFullPost(url) {
 async function writeComments(url) {
   const fetchCommentsResponse = await fetch(url);
   const commentsContent = await fetchCommentsResponse.json();
-  commentsContent[1].data.children.forEach(function(post) {
-    if (post.data.body) {
+  recurseComments(commentsContent[1].data);
+}
+
+/** Function that can recurse, showing all replies in a comment thread
+ * @param {string} replies - The array to parse for comments */
+function recurseComments(replies) {
+  replies.children.forEach(function(post) {
+    if (post.data.body && post.data.score > 0) {
       const commentAuthor = document.createElement('h3');
       document.getElementById('comments').appendChild(commentAuthor);
       commentAuthor.classList.add('comment_author');
       commentAuthor.innerText = post.data.author;
+      commentAuthor.style.paddingLeft = post.data.depth*20+'px';
 
       const commentText = document.createElement('p');
       document.getElementById('comments').appendChild(commentText);
       commentText.innerText = post.data.body;
+      commentText.style.paddingLeft = post.data.depth*20+'px';
+
+      if (post.data.replies.data) {
+        recurseComments(post.data.replies.data);
+      }
     }
   });
 }
@@ -440,7 +476,7 @@ function checkScroll(event) {
   lastScrollPosition = window.pageYOffset;
 
   const TOCElement = document.getElementById('TOC');
-  if (window.getComputedStyle(TOCElement).display != 'none') {
+  if (TOCElement && window.getComputedStyle(TOCElement).display != 'none') {
     const postHeaders =
       document.getElementById('whole_post').querySelectorAll('h1, h2, h3');
     const TOCDivs = TOCElement.querySelectorAll('div');
