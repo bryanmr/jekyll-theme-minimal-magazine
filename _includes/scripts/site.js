@@ -125,7 +125,8 @@ function getSetValue(key) {
 /** Displays 10 posts from postsStartPosition */
 function displayTen() {
   firstPageDisplayed = false;
-  if (document.getElementById('full_post').style.display != 'block') {
+  if (window.getComputedStyle(document.getElementById('full_post')).display !=
+    'block') {
     window.scrollTo(0, 0);
   }
 
@@ -262,7 +263,7 @@ async function initializeSearch(url) {
 /** Replace the TOC div with the contents we expect */
 function displayTOC() {
   const postHeaders =
-    document.getElementById('full_post').querySelectorAll('h1, h2, h3');
+    document.getElementById('whole_post').querySelectorAll('h1, h2, h3');
 
   let TOCContents = '<div id="toc_label">Table of Contents</div>';
   TOCContents += `<div id="toc_head"><a href="#" onclick="window.scrollTo(
@@ -314,7 +315,28 @@ async function writeFullPost(url) {
       savedNavURL = window.location.search;
     }
     window.history.pushState({}, '', '?content='+url);
+
+    // writeComments('https://www.reddit.com/r/gifs/comments/b6i4rt/reindeer_under_the_aurora_borealis.json');
   }
+}
+
+/** Displays the comments for a post
+ * @param {string} url - URL for the comments to be displayed */
+async function writeComments(url) {
+  const fetchCommentsResponse = await fetch(url);
+  const commentsContent = await fetchCommentsResponse.json();
+  commentsContent[1].data.children.forEach(function(post) {
+    if (post.data.body) {
+      const commentAuthor = document.createElement('h3');
+      document.getElementById('comments').appendChild(commentAuthor);
+      commentAuthor.classList.add('comment_author');
+      commentAuthor.innerText = post.data.author;
+
+      const commentText = document.createElement('p');
+      document.getElementById('comments').appendChild(commentText);
+      commentText.innerText = post.data.body;
+    }
+  });
 }
 
 /** Closes the full_post div and opens back the all_posts_container */
@@ -418,24 +440,25 @@ function checkScroll(event) {
   lastScrollPosition = window.pageYOffset;
 
   const TOCElement = document.getElementById('TOC');
-  if (TOCElement && TOCElement.style.display != 'none') {
+  if (window.getComputedStyle(TOCElement).display != 'none') {
     const postHeaders =
-      document.getElementById('full_post').querySelectorAll('h1, h2, h3');
-    if (postHeaders[1].getBoundingClientRect().y > 1) {
-      TOCElement.querySelectorAll('div')[1].style.border = '5px solid gray';
-      removeBorders(TOCElement.querySelectorAll('div'), 1);
-    } else if ((window.innerHeight + window.pageYOffset) >=
-      document.body.scrollHeight-10) {
-      TOCElement.querySelectorAll('div')[postHeaders.length].style.border =
-        '5px solid gray';
-      removeBorders(TOCElement.querySelectorAll('div'), postHeaders.length);
-    } else {
-      for (let headNumber = 2; headNumber < postHeaders.length; headNumber++) {
-        if (postHeaders[headNumber].getBoundingClientRect().y > 1) {
-          TOCElement.querySelectorAll('div')[headNumber].style.border =
-            '5px solid gray';
-          removeBorders(TOCElement.querySelectorAll('div'), headNumber);
-          break;
+      document.getElementById('whole_post').querySelectorAll('h1, h2, h3');
+    const TOCDivs = TOCElement.querySelectorAll('div');
+    if (typeof postHeaders !== 'undefined' && postHeaders.length > 1) {
+      if (postHeaders[1].getBoundingClientRect().y > 1) {
+        TOCElement.querySelectorAll('div')[1].style.border = '5px solid black';
+        removeBorders(TOCDivs, 1);
+      } else {
+        for (let headNum = 2; headNum < TOCDivs.length; headNum++) {
+          // TOCDivs should be postHeaders+1
+          if (headNum == postHeaders.length) {
+            TOCDivs[headNum].style.border = '5px solid black';
+            removeBorders(TOCDivs, headNum);
+          } else if (postHeaders[headNum].getBoundingClientRect().y > 1) {
+            TOCDivs[headNum].style.border = '5px solid black';
+            removeBorders(TOCDivs, headNum);
+            break;
+          }
         }
       }
     }

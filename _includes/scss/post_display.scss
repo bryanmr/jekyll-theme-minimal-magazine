@@ -2,6 +2,7 @@
   width: 90%;
   margin: auto;
   padding: 0;
+  display: none;
 }
 .post_frontmatter {
   display: flex;
@@ -27,6 +28,8 @@
 }
 #tags_for_post img {
   object-fit: contain;
+}
+.comment_author {
 }
 @media only screen and (min-width: 768px) {
   .post_frontmatter h1 {

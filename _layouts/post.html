@@ -1,21 +1,23 @@
 ---
 layout: default
 ---
-<div class="post_frontmatter">
-  <h1>{{page.title | default: 'This Post is Too Awesome for a Title'}}</h1>
-  <div id="post_author">Written by {{page.author | default: 'None'}}</div>
-  {%- if page.date %}
-  <div id="post_date">On {{ page.date | date: "%B %d, %Y" }}</div>
-  {%- endif %}
+<div id="whole_post">
+  <div class="post_frontmatter">
+    <h1>{{page.title | default: 'This Post is Too Awesome for a Title'}}</h1>
+    <div id="post_author">Written by {{page.author | default: 'None'}}</div>
+    {%- if page.date %}
+    <div id="post_date">On {{ page.date | date: "%B %d, %Y" }}</div>
+    {%- endif %}
+  </div>
+  <div id="TOC"></div>
+  <div id="tags_for_post">
+    <img alt="Post image for flavor, not content" class="full_post_image" src='{{ page.image | relative_url }}'>
+    <div><b>Categories:</b> {{page.categories | join: ', ' | default: 'None'}}</div>
+    <div><b>Tags:</b> {{page.tags | join: ', ' | default: 'None'}}</div>
+  </div>
+  <article>
+    {{ content }}
+  </article>
 </div>
-<div id="TOC"></div>
-<div id="tags_for_post">
-  <img alt="Post image for flavor, not content" class="full_post_image" src='{{ page.image | relative_url }}'>
-  <div><b>Categories:</b> {{page.categories | join: ', ' | default: 'None'}}</div>
-  <div><b>Tags:</b> {{page.tags | join: ', ' | default: 'None'}}</div>
-</div>
-<article>
-{{ content }}
-</article>
-<div id="comments">
-</div>
+<h2>Comments</h2>
+<div id="comments"></div>

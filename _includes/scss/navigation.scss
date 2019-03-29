@@ -97,7 +97,7 @@
     width: 100%;
     display: flex;
   }
-  #menu_bars {
+  #menu_bars_link {
     margin-left: auto;
     padding: 5px 20px;
   }
@@ -135,7 +135,7 @@
     align-items: center;
     justify-content: center;
   }
-  #header_nav svg {
+  #header_nav svg, #menu_bars_link {
     display: none;
   }
   #header_nav {
