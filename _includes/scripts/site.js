@@ -316,16 +316,25 @@ async function writeFullPost(url) {
     }
     window.history.pushState({}, '', '?content='+url);
 
-    findComments(window.location.href);
+    findComments(window.location.hostname, window.location.search);
   }
 }
 
 /** Finds the Reddit threads for a blog post
+ * @param {string} site - The site we are searching for, should be ours
  * @param {string} url - URL for the blog post we are searching for */
-function findComments(url) {
+function findComments(site, url) {
   // URL for testing if the code works
-  // url = 'https://i.imgur.com/4V6UFix.gifv';
-  fetch('https://www.reddit.com/search.json?q=url%3A'+url).then(function(response) {
+  // site = 'i.imgur.com';
+  // url = '4V6UFix.gifv';
+  let fetchString = '';
+  url = url.split('=')[1];
+  if (site == '127.0.0.1') {
+    fetchString = 'https://www.reddit.com/search.json?q=url%3A"'+url+'"';
+  } else {
+    fetchString = 'https://www.reddit.com/search.json?q=site%3A'+site+' url%3A"'+url+'"';
+  }
+  fetch(fetchString).then(function(response) {
     if (response.ok) {
       return response.json();
     } else {
@@ -333,6 +342,7 @@ function findComments(url) {
     }
   }).then(function(redditPosts) {
     if (redditPosts.data.children[0]) {
+      document.getElementById('comments').innerHTML = '';
       redditPosts.data.children.forEach(function(thread) {
         writeComments('https://www.reddit.com'+
           thread.data.permalink.slice(0, -1)+'.json');
@@ -340,8 +350,25 @@ function findComments(url) {
     } else {
       console.log('No comment threads found on Reddit');
     }
-  }).catch((error) =>
-    console.error('Problem downloading comments. Message: '+error));
+  }).catch(function(error) {
+    document.getElementById('comments').innerHTML += '<div>'+
+      'Your browser is actually secure, so we cannot search Reddit comments.'+
+      ' You can <a href=\''+fetchString.replace('search.json', 'search')+
+      '\' target="_blank">check for threads</a> yourself, though.</div>';
+    console.error('Problem downloading comments. Message: '+error);
+  });
+}
+
+/** Makes links to the threads where we are finding comments
+ * @param {object} redditThread - The thread we are pulling info from */
+function writeThreads(redditThread) {
+  const thread = document.createElement('a');
+  document.getElementById('comments').appendChild(thread);
+  thread.classList.add('thread_link');
+  thread.innerText = 'Comments from '+redditThread.subreddit_name_prefixed+
+    ' posted at '+redditThread.title;
+  thread.setAttribute('href', 'https://www.reddit.com'+redditThread.permalink);
+  thread.setAttribute('target', '_blank');
 }
 
 /** Displays the comments for a post
@@ -349,6 +376,7 @@ function findComments(url) {
 async function writeComments(url) {
   const fetchCommentsResponse = await fetch(url);
   const commentsContent = await fetchCommentsResponse.json();
+  writeThreads(commentsContent[0].data.children[0].data);
   recurseComments(commentsContent[1].data);
 }
 
