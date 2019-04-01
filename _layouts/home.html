@@ -1,124 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <link rel="alternate" type="application/atom+xml" title="Atom Feed for {{ site.title }}" href="{{ 'feed.xml' | relative_url }}">
-    <link rel="shortcut icon" type="image/icon" href="{{ site.favicon | relative_url }}"/>
-    {% capture styles %}
-    {% include scss/dropdown_menu.scss %}
-    {% include scss/main.scss %}
-    {% include scss/navigation.scss %}
-    {% include scss/post_display.scss %}
-    {% include scss/post_preview.scss %}
-    {% include scss/footer.scss %}
-    {% include scss/tags.scss %}
-    {% endcapture %}
-    <style>
-    {{ styles | scssify }}
-    </style>
-    {% seo %}
-  </head>
+{% include html/head.html %}
   <body>
-    <header id="banner">
-      <h1 id="headline">{{ site.title }} -- {{ site.description }}</h1>
-      <img alt="Site Logo" src="{{ site.logo | relative_url }}">
-    </header>
-    <nav id="header_nav">
-      <div id="home_menu">
-        <a href="{{ '/' | relative_url }}">🏠 Home</a>
-        <a id="menu_bars_link" href="#" onclick="toggleSiteMenu();return false">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-            <path d="M0 0h24v24H0z" fill="none" />
-            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" id="menu_bars" />
-          </svg>
-        </a>
-      </div>
-
-      <div id="site_menu">
-        {%- if site.categories %}
-        <div id="categories_nav" class="dropdown">
-          <a tabindex="0" href="javascript:void(0)">📔 Categories</a>
-          <div class="dropdown_content" role="menu" aria-haspopup="true" aria-expanded="false">
-          {%- for category in site.categories %}
-          <a href="{{ '?category=' | relative_url }}{{ category | first }}" onclick="displayCategory('{{ category | first }}');this.blur();return false">{{ category | first }}</a>
-          {%- endfor %}
-          </div>
-        </div>
-        {%- endif -%}
-
-        {%- if site.tags %}
-        <div id="tags_nav" class="dropdown">
-          <a tabindex="0" href="javascript:void(0)">🏷️ Tags</a>
-          <div class="dropdown_content" role="menu" aria-haspopup="true" aria-expanded="false">
-            <a class="dropdown_more" href="#" onclick="displayAllTags();this.blur();return false">Browse All Tags</a>
-            {%- for tag in site.tags limit:10 %}
-            <a href="{{ '?tag=' | relative_url }}{{ tag | first }}" onclick="displayTag('{{ tag | first }}');this.blur();return false">{{ tag | first }}</a>
-            {%- endfor %}
-          </div>
-        </div>
-        {%- endif %}
-
-        {%- for nav_target in site.navigation %}
-        <a href="{{ '/?content=' | relative_url }}{{ nav_target.url | relative_url }}" onclick='writeFullPost("{{ nav_target.url | relative_url }}");return false'>{{ nav_target.text }}</a>
-        {%- endfor %}
-
-        <div id="nav_spacer"></div>
-
-        <!-- lunr.js search -->
-        <input onkeydown="if(event.keyCode == 13){event.preventDefault(); return false;}" id="search" type="search" name="lunr_search" aria-label="Site Search" placeholder="lunr.js site search">
-      </div>
-
-      <a href="#" id="close_full_post" onclick="closeFullPost();return false">❌ Close Displayed Content</a>
-      <a href="#" id="clear_search_results" onclick="clearSearchResults();return false">❌ Clear Search Results</a>
-      <a href="#" id="close_tags" onclick="closeTagsDisplay();return false">❌ Close Tags and Categories</a>
-    </nav>
-
-    <a href="#" id="previous_page" title="Previous Posts" onclick="previousPage();return false"><nav class="page_turner">&#8249;</nav></a>
-    <a href="#" id="next_page" title="Next Posts" onclick="nextPage();return false"><nav class="page_turner">&#8250;</nav></a>
-
-    {%- if site.tags %}
-    <div id="tag_holder">
-      <div id="tags">
-        {%- for tag in site.tags %}
-        <a style="font-size: {{ tag | last | size | times: 5 | plus: 6 }}px" href="{{ '?tag=' | relative_url }}{{ tag | first }}" onclick="displayTag('{{ tag | first }}');this.blur();return false"> {{ tag | first }} ({{ tag | last | size }}) </a>
-        {%- endfor %}
-      </div>
-    </div>
-    {%- endif %}
-
-    <div id="all_posts_container">
-      {%- for post in site.posts %}
-      <div id="{{ post.permalink | sluggify }}" class="single_post_container" data-categories="{{ post.categories | join: ',' | default: 'None' }}" data-tags="{{ post.tags | join: ',' | default: 'None' }}">
-        <a href="{{ '?content=' | relative_url }}{{ post.permalink | relative_url }}" onclick='writeFullPost("{{ post.permalink | relative_url }}");return false'>
-          <div class="bg_post_image" style="background-image: url({{ post.image | relative_url }});"></div>
-          <div class="over_text">
-            <b>Author:</b> {{ post.author | default: 'None' }}<br>
-            <b>Date:</b> {{ post.date | date: "%B %d, %Y" | default: 'None' }}<br>
-            <b>Categories:</b> {{ post.categories | join: ', ' | default: 'None' }}<br>
-            <b>Tags:</b> {{ post.tags | join: ', ' | default: 'None' }}
-            <p>{{- post.excerpt | strip_html | truncatewords: 40 | strip -}} <em> Click for More</em></p>
-          </div>
-          <h2>{{- post.title -}}</h2>
-        </a>
-      </div>
-      {%- endfor %}
-    </div>
-
+{% include html/page_header.html %}
+{% include html/home_content.html %}
     <div id="full_post"></div>
-
-    <div id="footer_spacer"></div>
-    <footer id="footer" class="contrast">
-      <div id="copyright">©️ {{ site.author }} - {{ site.time | date: '%Y' }}</div>
-      <div id="page_number"></div>
-      <div id="advertisement"><a href="https://github.com/bryanmr/jekyll-theme-minimal-magazine">Jekyll Minimal Magazine</a> by <a href="https://bryanreese.net">Bryan Reese</a></div>
-    </footer>
+{% include html/page_footer.html %}
+    <script>
+      {% include scripts/lunr.min.js %}
+    </script>
+    <script>
+      {% include scripts/site.js %}
+    </script>
   </body>
-
-  <script>
-    {% include scripts/lunr.min.js %}
-  </script>
-  <script>
-    {% include scripts/site.js %}
-  </script>
 </html>

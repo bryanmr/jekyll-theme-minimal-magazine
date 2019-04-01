@@ -1,0 +1,31 @@
+<a href="#" id="previous_page" title="Previous Posts" onclick="previousPage();return false"><nav class="page_turner">&#8249;</nav></a>
+<a href="#" id="next_page" title="Next Posts" onclick="nextPage();return false"><nav class="page_turner">&#8250;</nav></a>
+
+{%- if site.tags %}
+<div id="tag_holder">
+  <div id="tags">
+    {%- for tag in site.tags %}
+    <a style="font-size: {{ tag | last | size | times: 5 | plus: 6 }}px" href="{{ '?tag=' | relative_url }}{{ tag | first }}"
+      onclick="displayTag('{{ tag | first }}');this.blur();return false"> {{ tag | first }} ({{ tag | last | size }}) </a>
+    {%- endfor %}
+  </div>
+</div>
+{%- endif %}
+
+<div id="all_posts_container">
+  {%- for post in site.posts %}
+  <div id="{{ post.permalink | sluggify }}" class="single_post_container" data-categories="{{ post.categories | join: ',' | default: 'None' }}" data-tags="{{ post.tags | join: ',' | default: 'None' }}">
+    <a href="{{ '?content=' | relative_url }}{{ post.permalink | relative_url }}" onclick='writeFullPost("{{ post.permalink | relative_url }}");return false'>
+      <div class="bg_post_image" style="background-image: url({{ post.image | relative_url }});"></div>
+      <div class="over_text">
+        <b>Author:</b> {{ post.author | default: 'None' }}<br>
+        <b>Date:</b> {{ post.date | date: "%B %d, %Y" | default: 'None' }}<br>
+        <b>Categories:</b> {{ post.categories | join: ', ' | default: 'None' }}<br>
+        <b>Tags:</b> {{ post.tags | join: ', ' | default: 'None' }}
+        <p>{{- post.excerpt | strip_html | truncatewords: 40 | strip -}} <em> Click for More</em></p>
+      </div>
+      <h2>{{- post.title -}}</h2>
+    </a>
+  </div>
+  {%- endfor %}
+</div>
