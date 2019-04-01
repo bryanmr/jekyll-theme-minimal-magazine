@@ -1,0 +1,36 @@
+{% capture styles %}
+{% include scss/post_display.scss %}
+{% endcapture %}
+<style>
+{{ styles | scssify }}
+</style>
+<div id="full_post">
+  <div id="whole_post">
+    <div class="post_frontmatter">
+      <h1>{{page.title | default: 'This Post is Too Awesome for a Title'}}</h1>
+      <div id="post_author">Written by {{page.author | default: 'None'}}</div>
+      {%- if page.date %}
+      <div id="post_date">On {{ page.date | date: "%B %d, %Y" }}</div>
+      {%- endif %}
+    </div>
+    <div id="TOC"></div>
+    <div id="tags_for_post">
+      <img alt="Post image for flavor, not content" class="full_post_image" src='{{ page.image | relative_url }}'>
+      <div><b>Categories:</b> {{page.categories | join: ', ' | default: 'None'}}</div>
+      <div><b>Tags:</b> {{page.tags | join: ', ' | default: 'None'}}</div>
+    </div>
+    <article>
+      {{ content }}
+    </article>
+  </div>
+  <h2>Comments</h2>
+  <div id="comments">No comments can be loaded for this post.
+    {%- if site.subreddit -%}
+    <a href="https://www.reddit.com/r/{{ site.subreddit }}/submit?title={{ page.title }}&url={{ '/' | absolute_url }}?content={{ page.permalink | relative_url }}"
+       {%- else -%}
+       <a href="https://www.reddit.com/submit?title={{ page.title }}&url={{ '/' | absolute_url }}?content={{ page.permalink | relative_url }}"
+          {%- endif %}
+          target="_blank"> Why don't you start a thread on Reddit?</a>
+  </div>
+
+</div>

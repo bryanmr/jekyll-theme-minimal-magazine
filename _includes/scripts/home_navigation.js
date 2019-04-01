@@ -1,28 +1,22 @@
 /* exported displayCategory */
 /* exported displayTag */
 /* exported displayAllTags */
-/* exported writeFullPost */
-/* exported closeFullPost */
 /* exported clearSearchResults */
 /* exported closeTagsDisplay */
 /* exported previousPage */
 /* exported nextPage */
-/* exported scrollTOC */
 /* exported toggleSiteMenu */
 'use strict';
 let lunrIndex = false;
 let postsStartPosition = 0;
 let lastScrollPosition = 0;
-let savedNavURL = false;
 let firstPageDisplayed = false;
-let originalTitle = false;
 
 document.addEventListener('DOMContentLoaded', function() {
   document.addEventListener('scroll', checkScroll, {passive: true});
   document.addEventListener('wheel', checkScrollBottom, {passive: true});
   document.addEventListener('keydown', checkKey, true);
   window.addEventListener('popstate', handleBrowserBack, true);
-  elementHeightSet('footer', 'footer_spacer');
   originalTitle = document.title;
   initializePage();
 });
@@ -33,18 +27,8 @@ function handleBrowserBack() {
   location.reload();
 }
 
-/** Sets the footer spacer to match the footer, no wasted space
- * @param {string} source - Where the height value is being copied from
- * @param {string} target - Where the height value is being copied to */
-function elementHeightSet(source, target) {
-  const elementHeight =
-    window.getComputedStyle(document.getElementById(source)).height;
-  document.getElementById(target).style.height = elementHeight;
-}
-
 /** Gets the page ready to be displayed */
 function initializePage() {
-  document.getElementById('close_full_post').style.display = 'none';
   document.getElementById('close_tags').style.display = 'none';
   document.getElementById('clear_search_results').style.display = 'none';
 
@@ -66,8 +50,6 @@ function initializePage() {
   } else {
     displayTen();
   }
-
-  writeFullPost(getSetValue('content'));
 }
 
 /** Clears what is being displayed, so it can be built back up */
@@ -75,9 +57,7 @@ function hideEverything() {
   hideNav();
   hideAllPosts();
   document.getElementById('tags').style.display = 'none';
-  document.getElementById('full_post').style.display = 'none';
   document.getElementById('all_posts_container').style.display = 'none';
-  document.getElementById('close_full_post').style.display = 'none';
   document.getElementById('close_tags').style.display = 'none';
   document.getElementById('clear_search_results').style.display = 'none';
 }
@@ -85,18 +65,7 @@ function hideEverything() {
 /** Shows the all_posts_container */
 function showAllPostsContainer() {
   document.getElementById('all_posts_container').style.display = 'flex';
-  document.getElementById('full_post').style.display = 'none';
-  document.getElementById('close_full_post').style.display = 'none';
   window.scrollTo(0, 0);
-}
-
-/** Shows the all_posts_container */
-function showFullPostsContainer() {
-  document.getElementById('all_posts_container').style.display = 'none';
-  document.getElementById('tags').style.display = 'none';
-  document.getElementById('full_post').style.display = 'block';
-  document.getElementById('close_full_post').style.display = 'initial';
-  hideNav();
 }
 
 /** Displays the tag cloud */
@@ -125,11 +94,6 @@ function getSetValue(key) {
 /** Displays 10 posts from postsStartPosition */
 function displayTen() {
   firstPageDisplayed = false;
-  if (window.getComputedStyle(document.getElementById('full_post')).display !=
-    'block') {
-    window.scrollTo(0, 0);
-  }
-
   hideAllPosts();
   showPosts(10);
 }
@@ -260,157 +224,12 @@ async function initializeSearch(url) {
   lunrIndex = lunr.Index.load(serializedJSON);
 }
 
-/** Replace the TOC div with the contents we expect */
-function displayTOC() {
-  const postHeaders =
-    document.getElementById('whole_post').querySelectorAll('h1, h2, h3');
-
-  let TOCContents = '<div id="toc_label">Table of Contents</div>';
-  TOCContents += `<div id="toc_head"><a href="#" onclick="window.scrollTo(
-  { top: 0, behavior: 'smooth' });return false">Top of Page</a></div>`;
-
-  for (let headNumber = 1; headNumber < postHeaders.length; headNumber++) {
-    TOCContents +=
-      `<div class="toc_${postHeaders[headNumber].nodeName}">
-      <a href="#" onclick="scrollTOC('${postHeaders[headNumber].id}');
-      return false">
-      ${postHeaders[headNumber].innerHTML}</a></div>`;
-  }
-  document.getElementById('TOC').innerHTML = TOCContents;
-}
-
 /** For mobile, displays or collapses menu */
 function toggleSiteMenu() {
   if (document.getElementById('site_menu').style.display == 'flex') {
     document.getElementById('site_menu').style.display = 'none';
   } else {
     document.getElementById('site_menu').style.display = 'flex';
-  }
-}
-
-/** Scrolls based on TOC links
- * @param {string} Id - The ID we are scrolling to */
-function scrollTOC(Id) {
-  const elem = document.getElementById(Id);
-  elem.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'nearest'});
-}
-
-/** Writes out a post to the full_post element
- * @param {string} url - URL for the page to be displayed */
-async function writeFullPost(url) {
-  if (url) {
-    const fetchURLResponse = await fetch(url);
-    const pageContents = await fetchURLResponse.text();
-    document.getElementById('full_post').innerHTML = pageContents;
-
-    if (document.getElementById('page_title').dataset.title) {
-      document.title = document.getElementById('page_title').dataset.title;
-    }
-
-    window.scrollTo(0, 0);
-    showFullPostsContainer();
-    displayTOC();
-
-    if (!getSetValue('content')) {
-      savedNavURL = window.location.search;
-    }
-    window.history.pushState({}, '', '?content='+url);
-
-    findComments(window.location.hostname, window.location.search);
-  }
-}
-
-/** Finds the Reddit threads for a blog post
- * @param {string} site - The site we are searching for, should be ours
- * @param {string} url - URL for the blog post we are searching for */
-function findComments(site, url) {
-  // URL for testing if the code works
-  // site = 'i.imgur.com';
-  // url = '4V6UFix.gifv';
-  let fetchString = '';
-  url = url.split('=')[1];
-  if (site == '127.0.0.1') {
-    fetchString = 'https://www.reddit.com/search.json?q=url%3A"'+url+'"';
-  } else {
-    fetchString = 'https://www.reddit.com/search.json?q=site%3A'+site+' url%3A"'+url+'"';
-  }
-  fetch(fetchString).then(function(response) {
-    if (response.ok) {
-      return response.json();
-    } else {
-      throw new Error('Failed to download with unknown cause');
-    }
-  }).then(function(redditPosts) {
-    if (redditPosts.data.children[0]) {
-      document.getElementById('comments').innerHTML = '';
-      redditPosts.data.children.forEach(function(thread) {
-        writeComments('https://www.reddit.com'+
-          thread.data.permalink.slice(0, -1)+'.json');
-      });
-    } else {
-      console.log('No comment threads found on Reddit');
-    }
-  }).catch(function(error) {
-    document.getElementById('comments').innerHTML += '<div>'+
-      'Your browser is actually secure, so we cannot search Reddit comments.'+
-      ' You can <a href=\''+fetchString.replace('search.json', 'search')+
-      '\' target="_blank">check for threads</a> yourself, though.</div>';
-    console.error('Problem downloading comments. Message: '+error);
-  });
-}
-
-/** Makes links to the threads where we are finding comments
- * @param {object} redditThread - The thread we are pulling info from */
-function writeThreads(redditThread) {
-  const thread = document.createElement('a');
-  document.getElementById('comments').appendChild(thread);
-  thread.classList.add('thread_link');
-  thread.innerText = 'Comments from '+redditThread.subreddit_name_prefixed+
-    ' posted at '+redditThread.title;
-  thread.setAttribute('href', 'https://www.reddit.com'+redditThread.permalink);
-  thread.setAttribute('target', '_blank');
-}
-
-/** Displays the comments for a post
- * @param {string} url - URL for the comments to be displayed */
-async function writeComments(url) {
-  const fetchCommentsResponse = await fetch(url);
-  const commentsContent = await fetchCommentsResponse.json();
-  writeThreads(commentsContent[0].data.children[0].data);
-  recurseComments(commentsContent[1].data);
-}
-
-/** Function that can recurse, showing all replies in a comment thread
- * @param {string} replies - The array to parse for comments */
-function recurseComments(replies) {
-  replies.children.forEach(function(post) {
-    if (post.data.body && post.data.score > 0) {
-      const commentAuthor = document.createElement('h3');
-      document.getElementById('comments').appendChild(commentAuthor);
-      commentAuthor.classList.add('comment_author');
-      commentAuthor.innerText = post.data.author;
-      commentAuthor.style.paddingLeft = post.data.depth*20+'px';
-
-      const commentText = document.createElement('p');
-      document.getElementById('comments').appendChild(commentText);
-      commentText.innerText = post.data.body;
-      commentText.style.paddingLeft = post.data.depth*20+'px';
-
-      if (post.data.replies.data) {
-        recurseComments(post.data.replies.data);
-      }
-    }
-  });
-}
-
-/** Closes the full_post div and opens back the all_posts_container */
-function closeFullPost() {
-  showAllPostsContainer(); // Closes full_post
-  showNav();
-  popParamFromURL('content');
-  document.title = originalTitle;
-  if (savedNavURL) {
-    window.history.pushState({}, '', savedNavURL);
   }
 }
 
@@ -496,51 +315,12 @@ function checkKey(event) {
 /** Checks which direction we are scrolling and updates the TOC
  * @param {object} event - The event passed from the event listener */
 function checkScroll(event) {
-  if (lastScrollPosition > window.pageYOffset) {
-    // We don't do anything for scroll up, but leaving this here
-  } else {
+  if (lastScrollPosition < window.pageYOffset) {
     checkScrollBottom();
   }
+
   lastScrollPosition = window.pageYOffset;
-
-  const TOCElement = document.getElementById('TOC');
-  if (TOCElement && window.getComputedStyle(TOCElement).display != 'none') {
-    const postHeaders =
-      document.getElementById('whole_post').querySelectorAll('h1, h2, h3');
-    const TOCDivs = TOCElement.querySelectorAll('div');
-    if (typeof postHeaders !== 'undefined' && postHeaders.length > 1) {
-      if (postHeaders[1].getBoundingClientRect().y > 1) {
-        TOCElement.querySelectorAll('div')[1].style.border = '5px solid black';
-        removeBorders(TOCDivs, 1);
-      } else {
-        for (let headNum = 2; headNum < TOCDivs.length; headNum++) {
-          // TOCDivs should be postHeaders+1
-          if (headNum == postHeaders.length) {
-            TOCDivs[headNum].style.border = '5px solid black';
-            removeBorders(TOCDivs, headNum);
-          } else if (postHeaders[headNum].getBoundingClientRect().y > 1) {
-            TOCDivs[headNum].style.border = '5px solid black';
-            removeBorders(TOCDivs, headNum);
-            break;
-          }
-        }
-      }
-    }
-  }
-
-  /** Function to remove borders from a NodeList of elements
-   * @param {NodeList} element - The element to iterate over
-   * @param {number} skipSubElementNum - Skipping this element */
-  function removeBorders(element, skipSubElementNum) {
-    for (let elemNum = 0; elemNum < element.length; elemNum++) {
-      if (elemNum == skipSubElementNum) {
-        continue;
-      }
-      element[elemNum].style.border = 'none';
-    }
-  }
 }
-
 
 /** Checks if we are at the bottom of the page, then loads more content
  * @return {bool} - If this function returns, it is an error */
@@ -661,8 +441,7 @@ function showNav() {
 /** Returns true if we have a content tab open
  * @return {bool} - Returns true when there is no content blocking */
 function noOpenContent() {
-  if (document.getElementById('close_full_post').style.display == 'none' &&
-    document.getElementById('close_tags').style.display == 'none' &&
+  if (document.getElementById('close_tags').style.display == 'none' &&
     document.getElementById('clear_search_results').style.display == 'none') {
     return true;
   } else {
