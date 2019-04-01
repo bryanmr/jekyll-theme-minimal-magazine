@@ -1,3 +1,11 @@
+{% capture styles %}
+{% include scss/post_preview.scss %}
+{% include scss/tags.scss %}
+{% endcapture %}
+<style>
+{{ styles | scssify }}
+</style>
+
 <a href="#" id="previous_page" title="Previous Posts" onclick="previousPage();return false"><nav class="page_turner">&#8249;</nav></a>
 <a href="#" id="next_page" title="Next Posts" onclick="nextPage();return false"><nav class="page_turner">&#8250;</nav></a>
 

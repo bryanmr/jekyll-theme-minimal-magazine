@@ -1,3 +1,10 @@
+{% capture styles %}
+{% include scss/dropdown_menu.scss %}
+{% include scss/navigation.scss %}
+{% endcapture %}
+<style>
+{{ styles | scssify }}
+</style>
 <header id="banner">
   <h1 id="headline">{{ site.title }} -- {{ site.description }}</h1>
   <img alt="Site Logo" src="{{ site.logo | relative_url }}">

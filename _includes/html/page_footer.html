@@ -1,3 +1,9 @@
+{% capture styles %}
+{% include scss/footer.scss %}
+{% endcapture %}
+<style>
+{{ styles | scssify }}
+</style>
 <div id="footer_spacer"></div>
 <footer id="footer" class="contrast">
   <div id="copyright">©️ {{ site.author }} - {{ site.time | date: '%Y' }}</div>

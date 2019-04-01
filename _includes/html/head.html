@@ -6,13 +6,7 @@
     <link rel="alternate" type="application/atom+xml" title="Atom Feed for {{ site.title }}" href="{{ 'feed.xml' | relative_url }}">
     <link rel="shortcut icon" type="image/icon" href="{{ site.favicon | relative_url }}"/>
     {% capture styles %}
-    {% include scss/dropdown_menu.scss %}
     {% include scss/main.scss %}
-    {% include scss/navigation.scss %}
-    {% include scss/post_display.scss %}
-    {% include scss/post_preview.scss %}
-    {% include scss/footer.scss %}
-    {% include scss/tags.scss %}
     {% endcapture %}
     <style>
 {{ styles | scssify }}
