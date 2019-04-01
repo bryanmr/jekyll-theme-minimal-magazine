@@ -1,8 +1,5 @@
-{% capture styles %}
-{% include scss/post_display.scss %}
-{% endcapture %}
 <style>
-{{ styles | scssify }}
+{% include css/post_display.css %}
 </style>
 <div id="full_post">
   <div id="whole_post">
@@ -32,5 +29,4 @@
           {%- endif %}
           target="_blank"> Why don't you start a thread on Reddit?</a>
   </div>
-
 </div>
