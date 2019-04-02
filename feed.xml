@@ -6,7 +6,7 @@ layout: null
   <link href="{{ 'feed.xml' | absolute_url }}" rel="self" type="application/atom+xml" />
   <link href="{{ '/' | absolute_url }}" rel="alternate" type="text/html" />
   <updated>{{ site.time | date_to_xmlschema }}</updated>
-  <id>{{ site.url }}{{ '/' | relative_url }}</id>
+  <id>{{ '/' | absolute_url }}</id>
   <title type="html">{{ site.title | xml_escape }}</title>
   <subtitle>{{ site.description | xml_escape }}</subtitle>
   <author>
@@ -16,10 +16,10 @@ layout: null
   {%- for post in site.posts limit:15 %}
   <entry>
     <title type="html">{{ post.title | xml_escape }}</title>
-    <link href="{{ '/' | absolute_url }}?content={{ post.permalink | relative_url }}" rel="alternate" type="text/html" title="{{ post.title | xml_escape }}" />
+    <link href="{{ post.permalink | absolute_url }}" rel="alternate" type="text/html" title="{{ post.title | xml_escape }}" />
     <updated>{{ post.date | date_to_xmlschema }}</updated>
-    <id>{{ site.url }}{{ post.permalink | relative_url }}</id>
-    <content type="html" xml:base="{{ '/' | absolute_url }}?content={{ post.permalink | relative_url }}">
+    <id>{{ post.permalink | absolute_url }}</id>
+    <content type="html" xml:base="{{ post.permalink | absolute_url }}">
       {{ post.content | xml_escape }}
     </content>
     <author>
@@ -27,7 +27,7 @@ layout: null
     </author>
     <category term="{{ post.categories | join: ',' | xml_escape }}" />
     <summary type="html">{{ post.excerpt | strip_html | xml_escape }}</summary>
-    <media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="{{ site.url }}{{ post.image | relative_url | xml_escape }}" />
+    <media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="{{ post.image | absolute_url | xml_escape }}" />
   </entry>
   {%- endfor %}
 </feed>
