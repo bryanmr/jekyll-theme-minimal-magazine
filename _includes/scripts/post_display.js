@@ -4,7 +4,7 @@
 document.addEventListener('DOMContentLoaded', function() {
   document.addEventListener('scroll', checkScrollTOC, {passive: true});
   displayTOC();
-  findComments(window.location.hostname, window.location.search);
+  findComments(window.location.hostname, window.location.pathname);
 });
 
 /** Checks which direction we are scrolling and updates the TOC
@@ -82,7 +82,6 @@ function findComments(site, url) {
   // site = 'i.imgur.com';
   // url = '4V6UFix.gifv';
   let fetchString = '';
-  url = url.split('=')[1];
   if (site == '127.0.0.1') {
     fetchString = 'https://www.reddit.com/search.json?q=url%3A"'+url+'"';
   } else {
