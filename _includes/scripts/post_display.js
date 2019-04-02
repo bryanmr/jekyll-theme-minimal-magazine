@@ -107,7 +107,8 @@ function findComments(site, url) {
     document.getElementById('comments').innerHTML += '<div>'+
       'Your browser is actually secure, so we cannot search Reddit comments.'+
       ' You can <a href=\''+fetchString.replace('search.json', 'search')+
-      '\' target="_blank">check for threads</a> yourself, though.</div>';
+      '\' target="_blank" rel="noopener" rel="noreferrer">'+
+      'check for threads</a> yourself, though.</div>';
     console.error('Problem downloading comments. Message: '+error);
   });
 }
@@ -122,6 +123,7 @@ function writeThreads(redditThread) {
     ' posted at '+redditThread.title;
   thread.setAttribute('href', 'https://www.reddit.com'+redditThread.permalink);
   thread.setAttribute('target', '_blank');
+  thread.setAttribute('rel', 'noreferrer noopener');
 }
 
 /** Displays the comments for a post

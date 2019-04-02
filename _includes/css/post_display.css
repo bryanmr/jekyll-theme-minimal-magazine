@@ -19,7 +19,7 @@
 #post_date {
   display: block;
   order: 3;
-  color: SlateGray;
+  color: DarkSlateGray;
 }
 #full_post article {
   padding: 0;
@@ -46,10 +46,10 @@
   }
   #TOC {
     float: left;
-    background-color: SlateGray;
+    background-color: DarkSlateGray;
   }
   #toc_label {
-    background-color: DarkSlateGray;
+    background-color: Black;
   }
   #TOC div {
     padding: 5px 10px 5px 10px;
