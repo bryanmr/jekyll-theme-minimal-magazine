@@ -52,10 +52,10 @@
   margin-left: auto;
   padding: 0px 20px;
 }
-#close_full_post, #clear_search_results, #search, #close_tags {
+#clear_search_results, #search, #close_tags {
   display: none;
 }
-#close_full_post, #clear_search_results, #close_tags {
+#clear_search_results, #close_tags {
   animation-duration: 1s;
   animation-name: fadein;
 }
@@ -136,7 +136,7 @@
     align-items: center;
     justify-content: center;
   }
-  #header_nav svg, #menu_bars_link {
+  #menu_bars_link {
     display: none;
   }
   #header_nav {

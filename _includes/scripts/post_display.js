@@ -1,4 +1,5 @@
 /* exported scrollTOC */
+/* exported closeFullPost */
 'use strict';
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -156,4 +157,14 @@ function recurseComments(replies) {
       }
     }
   });
+}
+
+/** Function to close our post page and return to where we came from */
+function closeFullPost() {
+  if (!document.referrer || window.location == document.referrer) {
+    window.location =
+      document.getElementById('home_menu').children[0].pathname;
+  } else {
+    window.location = document.referrer;
+  }
 }
