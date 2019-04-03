@@ -84,7 +84,7 @@
   #full_post article {
     width: 50%;
   }
-  #full_post article h1, #full_post article h2, #full_post article h3 {
+  #post_title, #full_post article h1, #full_post article h2, #full_post article h3 {
     margin-top: -40px;
     padding-top: 40px;
   }

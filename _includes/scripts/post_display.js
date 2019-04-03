@@ -55,14 +55,14 @@ function displayTOC() {
     document.getElementById('whole_post').querySelectorAll('h1, h2, h3');
 
   let TOCContents = '<div id="toc_label">Table of Contents</div>';
-  TOCContents += `<div id="toc_head"><a href="#" onclick="window.scrollTo(
-  { top: 0, behavior: 'smooth' });return false">Top of Page</a></div>`;
+  TOCContents += `<div id="toc_head"><a href="#"
+  onclick="scrollTOC('post_title');return false">Top of Page</a></div>`;
 
   for (let headNumber = 1; headNumber < postHeaders.length; headNumber++) {
     TOCContents +=
       `<div class="toc_${postHeaders[headNumber].nodeName}">
-      <a href="#" onclick="scrollTOC('${postHeaders[headNumber].id}');
-      return false">
+      <a href="#${postHeaders[headNumber].id}"
+      onclick="scrollTOC('${postHeaders[headNumber].id}');return false">
       ${postHeaders[headNumber].innerHTML}</a></div>`;
   }
   document.getElementById('TOC').innerHTML = TOCContents;
@@ -73,6 +73,11 @@ function displayTOC() {
 function scrollTOC(Id) {
   const elem = document.getElementById(Id);
   elem.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'nearest'});
+  if (Id != 'post_title') {
+    history.replaceState({}, '', '#'+Id);
+  } else {
+    history.replaceState({}, '', window.location.pathname);
+  }
 }
 
 /** Finds the Reddit threads for a blog post
