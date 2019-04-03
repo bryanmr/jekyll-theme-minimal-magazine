@@ -33,4 +33,5 @@
     <meta property="og:image_url" content="{{ page.image | default: site.logo | absolute_url }}">
     <meta itemprop="image" content="{{ page.image | default: site.logo | absolute_url }}">
     <meta name="keywords" content="{{ page.keywords | default: page.tags | default: 'blog' | join: ',' }}">
+    <meta itemprop="baseurl" content="{{ '/' | absolute_url }}">
   </head>

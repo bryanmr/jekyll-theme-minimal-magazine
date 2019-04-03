@@ -5,7 +5,9 @@
 document.addEventListener('DOMContentLoaded', function() {
   document.addEventListener('scroll', checkScrollTOC, {passive: true});
   displayTOC();
-  findComments(window.location.hostname, window.location.pathname);
+  const baseURL = document.querySelector('meta[itemprop="baseurl"]')
+      .getAttribute('content').split('/')[2];
+  findComments(baseURL, window.location.pathname);
 });
 
 /** Checks which direction we are scrolling and updates the TOC
@@ -87,12 +89,7 @@ function findComments(site, url) {
   // URL for testing if the code works
   // site = 'i.imgur.com';
   // url = '4V6UFix.gifv';
-  let fetchString = '';
-  if (site == '127.0.0.1') {
-    fetchString = 'https://www.reddit.com/search.json?q=url%3A"'+url+'"';
-  } else {
-    fetchString = 'https://www.reddit.com/search.json?q=site%3A'+site+' url%3A"'+url+'"';
-  }
+  const fetchString = 'https://www.reddit.com/search.json?q=site%3A"'+site+'" url%3A"'+url+'"';
   fetch(fetchString).then(function(response) {
     if (response.ok) {
       return response.json();
@@ -110,12 +107,32 @@ function findComments(site, url) {
       console.log('No comment threads found on Reddit');
     }
   }).catch(function(error) {
-    document.getElementById('comments').innerHTML += '<div>'+
-      'Your browser is actually secure, so we cannot search Reddit comments.'+
-      ' You can <a href=\''+fetchString.replace('search.json', 'search')+
-      '\' target="_blank" rel="noopener" rel="noreferrer">'+
-      'check for threads</a> yourself, though.</div>';
-    console.error('Problem downloading comments. Message: '+error);
+    console.log('Checking our own thread downloads.'+
+      'Error not fatal, yet. Reported as: '+error);
+    localComments(url);
+  });
+}
+
+/** Attempts to write from JSON stored at local URL
+ * @param {string} url - The URL we are checking for comment threads for */
+function localComments(url) {
+  const baseURL = document.getElementById('home_menu').children[0].pathname;
+  fetch(baseURL+'reddit_comment_threads.json').then(function(response) {
+    if (response.ok) {
+      return response.json();
+    } else {
+      throw new Error('Failed to download with unknown cause');
+    }
+  }).then(function(possiblePosts) {
+    console.log('We got our download');
+    if (possiblePosts.data.children[0]) {
+      console.log('We might have a post');
+      possiblePosts.data.children.forEach(function(thread) {
+        console.log('THREAD!');
+      });
+    }
+  }).catch(function(error) {
+    console.error('Giving up on posts. Error: '+error);
   });
 }
 
@@ -169,6 +186,8 @@ function closeFullPost() {
   if (!document.referrer || window.location == document.referrer) {
     window.location =
       document.getElementById('home_menu').children[0].pathname;
+  } else if (window.location.hostname != document.referrer) {
+    window.location = document.referrer;
   } else {
     window.location = document.referrer;
   }
