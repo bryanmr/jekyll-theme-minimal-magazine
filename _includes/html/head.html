@@ -8,16 +8,20 @@
     <style>{% include css/main.css %}</style>
     {%- if page.title %}
     <title>{{ page.title | default: site.title }} | {{ page.description | default: site.title }}</title>
+    <meta itemprop="title" content="{{ page.title | default: site.title }} | {{ page.description | default: site.title }}">
     <meta name="description" content="{{ page.description | default: page.excerpt | strip_html | truncatewords: 15 }}">
     <meta property="og:description" content="{{ page.description | default: page.excerpt | strip_html | truncatewords: 15 }}">
+    <meta itemprop="description" content="{{ page.description | default: page.excerpt | strip_html | truncatewords: 15 }}">
     <link rel="canonical" href="{{ page.permalink | absolute_url }}">
     <meta property="og:url" content="{{ page.permalink | absolute_url }}">
     <meta property="og:type" content="article">
     <meta property="article:published_time" content="{{ page.date }}">
     {%- else %}
     <title>{{ site.title }} | {{ site.description | default: A Blog }}</title>
+    <meta itemprop="title" content="{{ site.title }} | {{ site.description | default: A Blog }}">
     <meta name="description" content="{{ site.description }}">
     <meta property="og:description" content="{{ site.description }}">
+    <meta itemprop="description" content="{{ site.description }}">
     <link rel="canonical" href="{{ '/' | absolute_url }}">
     <meta property="og:url" content="{{ '/' | absolute_url }}">
     {%- endif %}
@@ -26,5 +30,7 @@
     <meta name="author" content="{{ site.author }}">
     <meta property="og:locale" content="en_US">
     <meta property="og:image" content="{{ page.image | default: site.logo | absolute_url }}">
-    <meta name="keywords" content="{{ page.keywords | default: page.tags | default: 'blog' | join: ',' }}" />
+    <meta property="og:image_url" content="{{ page.image | default: site.logo | absolute_url }}">
+    <meta itemprop="image" content="{{ page.image | default: site.logo | absolute_url }}">
+    <meta name="keywords" content="{{ page.keywords | default: page.tags | default: 'blog' | join: ',' }}">
   </head>

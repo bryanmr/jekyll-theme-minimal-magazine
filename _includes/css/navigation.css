@@ -29,6 +29,7 @@
   text-decoration: none;
   color: white;
   padding: 5px 20px;
+  display: inline-block;
 }
 #header_nav input {
   padding: 0;
