@@ -116,6 +116,7 @@ function findComments(site, url) {
 /** Attempts to write from JSON stored at local URL
  * @param {string} url - The URL we are checking for comment threads for */
 function localComments(url) {
+  let foundComments = false;
   const baseURL = document.getElementById('home_menu').children[0].pathname;
   fetch(baseURL+'reddit_comment_threads.json').then(function(response) {
     if (response.ok) {
@@ -124,11 +125,18 @@ function localComments(url) {
       throw new Error('Failed to download with unknown cause');
     }
   }).then(function(possiblePosts) {
-    console.log('We got our download');
     if (possiblePosts.data.children[0]) {
-      console.log('We might have a post');
       possiblePosts.data.children.forEach(function(thread) {
-        console.log('THREAD!');
+        if (thread.data.url.includes(url)) {
+          if (!foundComments) {
+            document.getElementById('comments').innerHTML = '';
+            foundComments = true;
+          }
+          writeThreads(thread.data);
+        }
+        if (!foundComments) {
+          console.log('No comment theads found on Reddit.');
+        }
       });
     }
   }).catch(function(error) {
@@ -137,7 +145,7 @@ function localComments(url) {
 }
 
 /** Makes links to the threads where we are finding comments
- * @param {object} redditThread - The thread we are pulling info from */
+ * @param {object} redditThread - The thread we are working on */
 function writeThreads(redditThread) {
   const thread = document.createElement('a');
   document.getElementById('comments').appendChild(thread);
