@@ -59,6 +59,10 @@
   animation-duration: 1s;
   animation-name: fadein;
 }
+#config_links {
+  position: relative;
+  margin: 5px 0px;
+}
 @keyframes fadein {
   from {
     opacity: .2;
